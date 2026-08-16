@@ -215,13 +215,13 @@ const RequestService = () => {
             <p className="text-gray-600 mb-4">Prefer to talk directly?</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <a 
-                href="tel:+256700000000" 
+                href="tel:256791475407" 
                 className="inline-flex items-center justify-center gap-2 bg-green-800 hover:bg-green-900 text-white px-6 py-3 rounded-xl font-semibold transition"
               >
                 <Phone size={18} /> Call Otuuse
               </a>
               <a 
-                href="https://wa.me/256700000000" 
+                href="https://wa.me/256791475407" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-semibold transition"
