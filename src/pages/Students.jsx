@@ -21,6 +21,12 @@ const studentServices = [
     title: "Need Something Delivered?",
     description: "Forgot your notes at home? Need food delivered to your room while you study? We pick it up and drop it off exactly where you need it, fast.",
     color: "bg-blue-50 text-blue-800"
+  },
+  {
+    icon: GraduationCap,
+    title: "Group Travel or Events?",
+    description: "Going for a group project, church event, or weekend trip? Book an Otuuse car ride for comfortable group transportation with your friends.",
+    color: "bg-indigo-50 text-indigo-800"
   }
 ];
 
@@ -28,6 +34,24 @@ const Students = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 p-6 lg:p-8">
+        {studentServices.map((service) => {
+          const Icon = service.icon;
+          return (
+            <div key={service.title} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className={`w-14 h-14 rounded-xl ${service.color} flex items-center justify-center mb-6`}>
+                <Icon size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-green-950 mb-3">{service.title}</h3>
+              <p className="text-gray-600 leading-relaxed mb-6">{service.description}</p>
+              <Link to="/request-service" className="inline-flex items-center gap-2 text-orange-500 font-semibold hover:text-orange-600 transition">
+                Book Now <ArrowRight size={18} />
+              </Link>
+            </div>
+          );
+        })}
+      </div>
 
       <main className="flex-grow">
         {/* Hero */}

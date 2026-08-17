@@ -22,12 +22,12 @@ const RequestService = () => {
 
     // Map service IDs to readable names
     const serviceNames = {
-      boda: "Boda Ride",
-      bike: "Bike Ride",
-      delivery: "Package Delivery",
-      moving: "Hostel/House Moving",
-    };
-
+  boda: "Boda Ride",
+  bike: "Bike Ride",
+  car: "Car Ride",
+  delivery: "Package Delivery",
+  moving: "Hostel/House Moving",
+};
     // Construct the WhatsApp message
     const whatsappMessage = encodeURIComponent(
       `*🚀 NEW OTUUSE SERVICE REQUEST*\n\n` +
@@ -61,11 +61,12 @@ const RequestService = () => {
   };
 
   const serviceOptions = [
-    { id: "boda", label: "Boda Ride", icon: "🛵" },
-    { id: "bike", label: "Bike Ride", icon: "🚲" },
-    { id: "delivery", label: "Delivery", icon: "📦" },
-    { id: "moving", label: "Moving", icon: "🏠" },
-  ];
+  { id: "boda", label: "Boda Ride", icon: "🛵" },
+  { id: "bike", label: "Bike Ride", icon: "🚲" },
+  { id: "car", label: "Car Ride", icon: "🚗" },
+  { id: "delivery", label: "Delivery", icon: "📦" },
+  { id: "moving", label: "Moving", icon: "🏠" },
+];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -87,7 +88,7 @@ const RequestService = () => {
               {/* Service Type Selection */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">What service do you need? *</label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                   {serviceOptions.map((option) => (
                     <label
                       key={option.id}

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Bike, Package, Truck, ArrowRight, CheckCircle2 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Bike, Car, Package, Truck, ArrowRight, CheckCircle2 } from "lucide-react";
 
 const serviceDetails = [
   {
@@ -20,6 +21,16 @@ const serviceDetails = [
     description: "Affordable and eco-friendly transportation for short-distance trips. Perfect for navigating the steep hills and busy streets of Kabale without breaking a sweat or your budget.",
     features: ["Highly affordable", "Eco-friendly", "Great for short distances", "Navigate traffic easily"]
   },
+
+  {
+  id: "car",
+  icon: Car,
+  title: "Car Rides",
+  color: "bg-indigo-50 text-indigo-800",
+  description: "Comfortable and spacious car transportation for longer distances, group travel, airport transfers, or when you need more room than a boda-boda offers. Perfect for moving with friends or carrying larger items.",
+  features: ["Comfortable seating", "Weather protection", "Group travel friendly", "Extra luggage space", "Long-distance capable"]
+},
+
   {
     id: "delivery",
     icon: Package,

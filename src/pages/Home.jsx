@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import {
   Bike,
+  Car,
   Package,
   Truck,
   ArrowRight,
@@ -16,6 +17,7 @@ import Footer from "../components/Footer";
 const services = [
   { icon: Bike, title: "Boda Rides", description: "Convenient and reliable rides around Kabale for students and the wider community." },
   { icon: Bike, title: "Bike Rides", description: "Affordable short-distance transportation when you want to move quickly and economically." },
+  { icon: Car, title: "Car Rides", description: "Comfortable car transportation for longer trips, group travel, or when you need extra space." },
   { icon: Package, title: "Deliveries", description: "Send packages, food, documents and other items to your desired destination." },
   { icon: Truck, title: "Moving Services", description: "Moving to another hostel or house? We help transport your belongings safely." },
 ];
@@ -70,7 +72,7 @@ const Home = () => {
             <h2 className="mt-3 text-4xl font-bold text-green-950">Transportation made simple</h2>
             <p className="mt-4 text-gray-600 text-lg">From getting to campus to moving between hostels, Otuuse helps you get where you need to go.</p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service) => {
               const Icon = service.icon;
               return (

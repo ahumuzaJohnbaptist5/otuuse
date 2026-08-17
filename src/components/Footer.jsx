@@ -37,16 +37,16 @@ const Footer = () => {
           </div>
 
           {/* Services */}
-          <div>
-            <h3 className="text-white font-bold text-lg mb-4">Services</h3>
-            <ul className="space-y-3 text-sm">
-              <li><Link to="/services" className="hover:text-orange-400 transition">Boda-Boda Rides</Link></li>
-              <li><Link to="/services" className="hover:text-orange-400 transition">Bike Rides</Link></li>
-              <li><Link to="/services" className="hover:text-orange-400 transition">Package Delivery</Link></li>
-              <li><Link to="/services" className="hover:text-orange-400 transition">Hostel Moving</Link></li>
-            </ul>
-          </div>
-
+<div>
+  <h3 className="text-white font-bold text-lg mb-4">Services</h3>
+  <ul className="space-y-3 text-sm">
+    <li><Link to="/services" className="hover:text-orange-400 transition">Boda-Boda Rides</Link></li>
+    <li><Link to="/services" className="hover:text-orange-400 transition">Bike Rides</Link></li>
+    <li><Link to="/services" className="hover:text-orange-400 transition">Car Rides</Link></li>
+    <li><Link to="/services" className="hover:text-orange-400 transition">Package Delivery</Link></li>
+    <li><Link to="/services" className="hover:text-orange-400 transition">Hostel Moving</Link></li>
+  </ul>
+</div>
           {/* Contact */}
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Contact Us</h3>
