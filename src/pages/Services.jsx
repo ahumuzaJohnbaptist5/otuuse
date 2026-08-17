@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Bike, Package, Truck, ArrowRight, CheckCircle2 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Bike, Car, Package, Truck, ArrowRight, CheckCircle2 } from "lucide-react";
