@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, Globe, MessageCircle, Camera } from "lucide-react";
+import logo from "../assets/logo.jpeg"; // Added logo import
 
 const Footer = () => {
   return (
@@ -8,10 +9,13 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center font-bold text-xl">
-                O
-              </div>
+            <div className="flex items-center gap-3 mb-4">
+              {/* New Responsive Logo */}
+              <img 
+                src={logo} 
+                alt="Otuuse Logo" 
+                className="h-10 md:h-12 w-auto object-contain" 
+              />
               <h2 className="text-2xl font-extrabold text-white">OTUUSE</h2>
             </div>
             <p className="text-sm text-green-300 mb-4 max-w-xs leading-relaxed">
@@ -37,16 +41,17 @@ const Footer = () => {
           </div>
 
           {/* Services */}
-<div>
-  <h3 className="text-white font-bold text-lg mb-4">Services</h3>
-  <ul className="space-y-3 text-sm">
-    <li><Link to="/services" className="hover:text-orange-400 transition">Boda-Boda Rides</Link></li>
-    <li><Link to="/services" className="hover:text-orange-400 transition">Bike Rides</Link></li>
-    <li><Link to="/services" className="hover:text-orange-400 transition">Car Rides</Link></li>
-    <li><Link to="/services" className="hover:text-orange-400 transition">Package Delivery</Link></li>
-    <li><Link to="/services" className="hover:text-orange-400 transition">Hostel Moving</Link></li>
-  </ul>
-</div>
+          <div>
+            <h3 className="text-white font-bold text-lg mb-4">Services</h3>
+            <ul className="space-y-3 text-sm">
+              <li><Link to="/services" className="hover:text-orange-400 transition">Boda-Boda Rides</Link></li>
+              <li><Link to="/services" className="hover:text-orange-400 transition">Bike Rides</Link></li>
+              <li><Link to="/services" className="hover:text-orange-400 transition">Car Rides</Link></li>
+              <li><Link to="/services" className="hover:text-orange-400 transition">Package Delivery</Link></li>
+              <li><Link to="/services" className="hover:text-orange-400 transition">Hostel Moving</Link></li>
+            </ul>
+          </div>
+
           {/* Contact */}
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Contact Us</h3>
@@ -57,7 +62,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-orange-400 shrink-0" />
-                <a href="tel:256791475407" className="hover:text-orange-400 transition">+256 791 475 407</a>
+                <a href="tel:+256791475407" className="hover:text-orange-400 transition">+256 791 475 407</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-orange-400 shrink-0" />

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import logo from "../assets/logo.jpeg"; 
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -11,20 +12,22 @@ const Navbar = () => {
         <div className="h-20 flex items-center justify-between">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-green-800 text-white flex items-center justify-center font-bold text-xl">
-              O
-            </div>
+          <Link to="/" className="flex items-center gap-3">
+             <img 
+                src={logo} 
+                alt="Otuuse Logo" 
+                className="h-10 md:h-12 w-auto object-contain" 
+                 />
 
             <div>
-              <h1 className="text-2xl font-extrabold tracking-tight text-green-900">
-                OTUUSE
-              </h1>
-              <p className="text-[10px] uppercase tracking-widest text-gray-500">
-                Move with confidence
-              </p>
-            </div>
-          </Link>
+                   <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-green-900">
+                      OTUUSE
+                    </h1>
+                    <p className="text-[10px] uppercase tracking-widest text-gray-500">
+                      Move with confidence
+                    </p>
+                  </div>
+                </Link>
 
           {/* Desktop navigation */}
           <div className="hidden lg:flex items-center gap-8">
