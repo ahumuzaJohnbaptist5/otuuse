@@ -12,22 +12,19 @@ const Navbar = () => {
         <div className="h-20 flex items-center justify-between">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3">
-             <img 
-                src={logo} 
-                alt="Otuuse Logo" 
-                className="h-10 md:h-12 w-auto object-contain" 
-                 />
-
-            <div>
-                   <h1 className="text-xl md:text-2xl font-extrabold tracking-tight text-green-900">
-                      OTUUSE
-                    </h1>
-                    <p className="text-[10px] uppercase tracking-widest text-gray-500">
-                      Move with confidence
-                    </p>
-                  </div>
-                </Link>
+<Link to="/" className="flex items-center gap-3">
+  {/* Dark green badge so the white logo pops on the white navbar */}
+  <div className="bg-green-950 rounded-xl p-2 shadow-sm">
+    <img
+      src={logo}
+      alt="Otuuse Logo"
+      className="h-9 md:h-11 w-auto object-contain"
+    />
+  </div>
+  <p className="hidden sm:block text-[10px] uppercase tracking-widest text-gray-500 font-semibold">
+    Move with confidence
+  </p>
+</Link>
 
           {/* Desktop navigation */}
           <div className="hidden lg:flex items-center gap-8">

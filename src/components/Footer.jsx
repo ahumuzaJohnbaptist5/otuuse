@@ -7,27 +7,25 @@ const Footer = () => {
     <footer className="bg-green-950 text-green-100 pt-16 pb-8 mt-auto">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+          
           {/* Brand */}
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              {/* New Responsive Logo */}
-              <img 
-                src={logo} 
-                alt="Otuuse Logo" 
-                className="h-10 md:h-12 w-auto object-contain" 
-              />
-              <h2 className="text-2xl font-extrabold text-white">OTUUSE</h2>
-            </div>
-            <p className="text-sm text-green-300 mb-4 max-w-xs leading-relaxed">
-              Reliable transportation, deliveries, and moving services in Kabale. Moving Kabale, one ride at a time.
-            </p>
-            <div className="flex gap-4">
-              <a href="#" className="hover:text-orange-400 transition" aria-label="Website"><Globe size={20} /></a>
-              <a href="#" className="hover:text-orange-400 transition" aria-label="Chat"><MessageCircle size={20} /></a>
-              <a href="#" className="hover:text-orange-400 transition" aria-label="Photos"><Camera size={20} /></a>
-            </div>
-          </div>
-
+<div>
+  <div className="mb-4">
+    <img
+      src={logo}
+      alt="Otuuse Logo"
+      className="h-12 md:h-14 w-auto object-contain"
+    />
+  </div>
+  <p className="text-sm text-green-300 mb-4 max-w-xs leading-relaxed">
+    Reliable transportation, deliveries, and moving services in Kabale. Moving Kabale, one ride at a time.
+  </p>
+  <div className="flex gap-4">
+    <a href="#" className="hover:text-orange-400 transition" aria-label="Website"><Globe size={20} /></a>
+    <a href="#" className="hover:text-orange-400 transition" aria-label="Chat"><MessageCircle size={20} /></a>
+    <a href="#" className="hover:text-orange-400 transition" aria-label="Photos"><Camera size={20} /></a>
+  </div>
+</div>
           {/* Quick Links */}
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Quick Links</h3>
