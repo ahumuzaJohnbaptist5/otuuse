@@ -13,7 +13,7 @@ const About = () => {
           <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center">
             <h1 className="text-4xl lg:text-5xl font-extrabold">About Otuuse</h1>
             <p className="mt-4 text-lg text-green-200 max-w-2xl mx-auto">
-              A Kabale-based transportation company built to make movement easier, safer, and more reliable for our community.
+              An AI-Powered transportation company built to make movement easier, safer, and more reliable for our Kabale community.
             </p>
           </div>
         </section>
@@ -25,7 +25,7 @@ const About = () => {
               <p className="text-orange-500 font-bold uppercase tracking-wider text-sm">Who We Are</p>
               <h2 className="mt-3 text-4xl font-bold text-green-950">Moving Kabale Forward</h2>
              <p className="mt-5 text-gray-600 text-lg leading-relaxed">
-                Otuuse is a Kabale-based transportation and delivery company providing convenient mobility solutions for students, businesses, and the wider community. We connect customers with reliable transportation services ranging from boda-boda and bicycle rides to car rides, package deliveries, and hostel moving services.
+                Otuuse is currently a Kabale-based transportation and delivery company providing convenient mobility solutions for students, businesses, and the wider community. We connect customers with reliable transportation services ranging from boda-boda and bicycle rides to car rides, package deliveries, and hostel moving services.
               </p>
               <p className="mt-4 text-gray-600 text-lg leading-relaxed">
                 We started Otuuse because we saw a gap in reliable, trustworthy, and affordable transport in Kabale. Students were struggling to move between hostels, and locals were wasting time searching for reliable riders. We decided to fix that.
