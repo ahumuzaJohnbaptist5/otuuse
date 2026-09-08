@@ -75,7 +75,7 @@ const FAQ = () => {
           <div className="mt-16 bg-green-950 rounded-2xl p-8 text-center text-white">
             <h2 className="text-2xl font-bold mb-2">Still have questions?</h2>
             <p className="text-green-200 mb-6">Our team is always ready to help you out.</p>
-            <a href="https://wa.me/256700000000" target="_blank" rel="noopener noreferrer" className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-bold transition">
+            <a href="https://wa.me/256791475407" target="_blank" rel="noopener noreferrer" className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-bold transition">
               Contact Support
             </a>
           </div>
