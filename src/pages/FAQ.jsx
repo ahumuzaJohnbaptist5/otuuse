@@ -34,7 +34,7 @@ const faqs = [
   {
     q: "How safe is my package during delivery?",
     a: "We guarantee safety of your packages in accordance to our company's terms and conditions ",
-  }
+  },
 ];
 
 const FAQ = () => {
