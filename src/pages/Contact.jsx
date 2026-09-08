@@ -68,7 +68,7 @@ const Contact = () => {
                     <Phone size={24} />
                   </div>
                   <h3 className="font-bold text-green-950 text-lg">Phone & WhatsApp</h3>
-                  <p className="text-gray-600 mt-2">+256 700 000 000</p>
+                  <p className="text-gray-600 mt-2">+256 791475407</p>
                   <p className="text-gray-600">Available 24/7</p>
                 </div>
 
