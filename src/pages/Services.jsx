@@ -118,7 +118,7 @@ const Services = () => {
             <p className="text-orange-50 mb-8 text-lg">
               If you have special transportation requirements or a large business delivery, reach out to us. We are happy to help!
             </p>
-            <a href="https://wa.me/256700000000" target="_blank" rel="noopener noreferrer" className="inline-block bg-green-950 hover:bg-green-900 text-white px-8 py-4 rounded-xl font-bold transition">
+            <a href="https://wa.me/256791475407" target="_blank" rel="noopener noreferrer" className="inline-block bg-green-950 hover:bg-green-900 text-white px-8 py-4 rounded-xl font-bold transition">
               Chat with us on WhatsApp
             </a>
           </div>
