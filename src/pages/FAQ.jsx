@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 const faqs = [
   {
     q: "What services does Otuuse provide?",
-    a: "Otuuse provides Boda-Boda rides, bicycle rides, package deliveries, and hostel/house moving services within Kabale."
+    a: "Otuuse provides Boda-Boda rides,car rides, bicycle rides, package deliveries, and hostel/house moving services within Kabale."
   },
   {
     q: "Does Otuuse operate around Kabale University?",
@@ -25,11 +25,15 @@ const faqs = [
   },
   {
     q: "Where exactly does Otuuse operate?",
-    a: "We currently operate throughout Kabale town, including Kabale University, Kikungulu, and surrounding neighborhoods. We are constantly expanding our coverage area."
+    a: "We currently operate throughout Kabale town, including Kabale University, Kikungiri, and surrounding neighborhoods. We are constantly expanding our coverage areas."
   },
   {
     q: "Is my package safe during delivery?",
     a: "Yes. Our riders are verified and trained to handle items with care. Whether it's food, documents, or fragile packages, we ensure it reaches its destination safely."
+      }
+  {
+    q: "How safe is my package during delivery?",
+    a: "We guarantee safety of your packages in accordance to our company's terms and conditions ",
   }
 ];
 
