@@ -171,13 +171,13 @@ const Contact = () => {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <a 
-                href="tel:+256700000000" 
+                href="tel:+256791475407" 
                 className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-bold transition"
               >
                 <Phone size={20} /> Call Otuuse
               </a>
               <a 
-                href="https://wa.me/256700000000" 
+                href="https://wa.me/256791475407" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-xl font-bold transition"
