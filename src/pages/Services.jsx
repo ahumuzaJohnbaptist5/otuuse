@@ -17,7 +17,7 @@ const serviceDetails = [
   {
     id: "bike",
     icon: Bike,
-    title: "Bicycle & E-Bike Rides",
+    title: "Bicycle & E-Bike Hire",
     color: "bg-orange-50 text-orange-800",
     description: "Affordable and eco-friendly transportation for short-distance trips. Perfect for navigating the steep hills and busy streets of Kabale without breaking a sweat or your budget.",
     features: ["Highly affordable", "Eco-friendly", "Great for short distances", "Navigate traffic easily"],

@@ -10,7 +10,7 @@ const services = [
     images: ["/images/boda-1.jpeg"],
   },
   {
-    title: "Bike Rides",
+    title: "Bike Hire",
     description: "Affordable short-distance transportation when you want to move quickly and economically.",
     images: ["/images/bike-1.jpeg", "/images/bike-2.jpeg", "/images/bike-3.jpeg"],
   },

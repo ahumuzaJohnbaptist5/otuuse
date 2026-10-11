@@ -23,7 +23,7 @@ const RequestService = () => {
     // Map service IDs to readable names
     const serviceNames = {
   boda: "Boda Ride",
-  bike: "Bike Ride",
+  bike: "Bike Hire",
   car: "Car Ride",
   delivery: "Package Delivery",
   moving: "Hostel/House Moving",
@@ -62,7 +62,7 @@ const RequestService = () => {
 
   const serviceOptions = [
   { id: "boda", label: "Boda Ride", icon: "🛵" },
-  { id: "bike", label: "Bike Ride", icon: "🚲" },
+  { id: "bike", label: "Bike Hire", icon: "🚲" },
   { id: "car", label: "Car Ride", icon: "🚗" },
   { id: "delivery", label: "Delivery", icon: "📦" },
   { id: "moving", label: "Moving", icon: "🏠" },
