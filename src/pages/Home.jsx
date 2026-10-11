@@ -1,25 +1,53 @@
 import { Link } from "react-router-dom";
-import {
-  Bike,
-  Car,
-  Package,
-  Truck,
-  ArrowRight,
-  ShieldCheck,
-  Clock3,
-  MapPin,
-  Star
-} from "lucide-react";
-
+import { ArrowRight, MapPin, Star } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import ImageSlider from "../components/ImageSlider";
 
 const services = [
-  { icon: Bike, title: "Boda Rides", description: "Convenient and reliable rides around Kabale for students and the wider community." },
-  { icon: Bike, title: "Bike Rides", description: "Affordable short-distance transportation when you want to move quickly and economically." },
-  { icon: Car, title: "Car Rides", description: "Comfortable car transportation for longer trips, group travel, or when you need extra space." },
-  { icon: Package, title: "Deliveries", description: "Send packages, food, documents and other items to your desired destination." },
-  { icon: Truck, title: "Moving Services", description: "Moving to another hostel or house? We help transport your belongings safely." },
+  {
+    title: "Boda Rides",
+    description: "Convenient and reliable rides around Kabale for students and the wider community.",
+    images: ["/images/boda-1.jpeg"],
+  },
+  {
+    title: "Bike Rides",
+    description: "Affordable short-distance transportation when you want to move quickly and economically.",
+    images: ["/images/bike-1.jpeg", "/images/bike-2.jpeg", "/images/bike-3.jpeg"],
+  },
+  {
+    title: "Car Rides",
+    description: "Comfortable car transportation for longer trips, group travel, or when you need extra space.",
+    images: ["/images/car-1.jpeg", "/images/car-2.jpeg"],
+  },
+  {
+    title: "Deliveries",
+    description: "Send packages, food, documents and other items to your desired destination.",
+    images: ["/images/cargo-1.jpeg", "/images/cargo-2.jpeg"],
+  },
+  {
+    title: "Moving Services",
+    description: "Moving to another hostel or house? We help transport your belongings safely.",
+    images: ["/images/cargo-2.jpeg", "/images/cargo-1.jpeg", "/images/car-1.jpeg"],
+  },
+];
+
+const testimonials = [
+  {
+    name: "Sarah M.",
+    role: "Kabale University Student",
+    quote: "Otuuse saved me during exam week! I needed to send notes to my friend across campus and they delivered it in 15 minutes. Highly reliable.",
+  },
+  {
+    name: "David K.",
+    role: "Local Business Owner",
+    quote: "We use Otuuse for all our local deliveries. The riders are professional, polite, and always on time. Great service for businesses in Kabale.",
+  },
+  {
+    name: "Jane A.",
+    role: "Hostel Resident",
+    quote: "Moving hostels is always a hassle, but the Otuuse moving service made it so easy. They handled my luggage with care and the price was very fair.",
+  },
 ];
 
 const Home = () => {
@@ -52,7 +80,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Stats (Trust Building) */}
+      {/* Stats */}
       <section className="py-16 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -64,51 +92,49 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Services */}
-      <section className="py-20 bg-white">
+      {/* Services with real sliding photos */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl mb-12">
             <p className="text-orange-500 font-bold uppercase tracking-wider text-sm">What we do</p>
             <h2 className="mt-3 text-4xl font-bold text-green-950">Transportation made simple</h2>
             <p className="mt-4 text-gray-600 text-lg">From getting to campus to moving between hostels, Otuuse helps you get where you need to go.</p>
           </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => {
-              const Icon = service.icon;
-              return (
-                <div key={service.title} className="group border border-gray-100 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition">
-                  <div className="w-14 h-14 rounded-xl bg-green-50 text-green-800 flex items-center justify-center"><Icon size={28} /></div>
-                  <h3 className="mt-6 text-xl font-bold text-gray-900">{service.title}</h3>
-                  <p className="mt-3 text-gray-600 leading-relaxed">{service.description}</p>
-                  <Link to="/services" className="inline-flex items-center gap-2 mt-5 text-green-800 font-semibold">Learn more <ArrowRight size={17} /></Link>
-                </div>
-              );
-            })}
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service) => (
+              <div key={service.title} className="group border border-gray-100 rounded-2xl p-5 bg-white hover:shadow-xl hover:-translate-y-1 transition">
+                <ImageSlider images={service.images} alt={service.title} />
+                <h3 className="mt-5 text-xl font-bold text-gray-900">{service.title}</h3>
+                <p className="mt-3 text-gray-600 leading-relaxed">{service.description}</p>
+                <Link to="/services" className="inline-flex items-center gap-2 mt-5 text-green-800 font-semibold">
+                  Learn more <ArrowRight size={17} />
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials (Social Proof) */}
-      <section className="py-20 bg-gray-50">
+      {/* Testimonials */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-orange-500 font-bold uppercase tracking-wider text-sm">Testimonials</p>
             <h2 className="mt-3 text-4xl font-bold text-green-950">Trusted by the Kabale Community</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              { name: "Sarah M.", role: "Kabale University Student", quote: "Otuuse saved me during exam week! I needed to send notes to my friend across campus and they delivered it in 15 minutes. Highly reliable." },
-              { name: "David K.", role: "Local Business Owner", quote: "We use Otuuse for all our local deliveries. The riders are professional, polite, and always on time. Great service for businesses in Kabale." },
-              { name: "Jane A.", role: "Hostel Resident", quote: "Moving hostels is always a hassle, but the Otuuse moving service made it so easy. They handled my luggage with care and the price was very fair." }
-            ].map((testimonial, idx) => (
-              <div key={idx} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+            {testimonials.map((t, idx) => (
+              <div key={idx} className="bg-gray-50 p-8 rounded-2xl border border-gray-100">
                 <div className="flex gap-1 mb-4 text-orange-400">
-                  {[1,2,3,4,5].map(star => <Star key={star} size={18} fill="currentColor" />)}
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star key={star} size={18} fill="currentColor" />
+                  ))}
                 </div>
-                <p className="text-gray-600 italic mb-6 leading-relaxed">"{testimonial.quote}"</p>
+                <p className="text-gray-600 italic mb-6 leading-relaxed">"{t.quote}"</p>
                 <div>
-                  <p className="font-bold text-green-950">{testimonial.name}</p>
-                  <p className="text-sm text-gray-500">{testimonial.role}</p>
+                  <p className="font-bold text-green-950">{t.name}</p>
+                  <p className="text-sm text-gray-500">{t.role}</p>
                 </div>
               </div>
             ))}
