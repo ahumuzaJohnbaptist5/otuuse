@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
+import { Bike, Car, Package, Truck, ArrowRight, CheckCircle2 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Bike, Car, Package, Truck, ArrowRight, CheckCircle2 } from "lucide-react";
+import ImageSlider from "../components/ImageSlider";
 
 const serviceDetails = [
   {
@@ -10,33 +11,35 @@ const serviceDetails = [
     title: "Boda-Boda Rides",
     color: "bg-green-50 text-green-800",
     description: "Convenient, safe, and reliable motorcycle rides around Kabale. Whether you are heading to class, work, or across town, our verified riders will get you there on time.",
-    features: ["Verified & polite riders", "Quick pickup times", "Safe helmets provided", "Fair, transparent pricing"]
+    features: ["Verified & polite riders", "Quick pickup times", "Safe helmets provided", "Fair, transparent pricing"],
+    images: ["/images/boda-1.jpeg"]
   },
   {
     id: "bike",
-    icon: Bike, // Using Bike icon for bicycle
-    title: "Bicycle Rides",
+    icon: Bike,
+    title: "Bicycle & E-Bike Rides",
     color: "bg-orange-50 text-orange-800",
     description: "Affordable and eco-friendly transportation for short-distance trips. Perfect for navigating the steep hills and busy streets of Kabale without breaking a sweat or your budget.",
-    features: ["Highly affordable", "Eco-friendly", "Great for short distances", "Navigate traffic easily"]
+    features: ["Highly affordable", "Eco-friendly", "Great for short distances", "Navigate traffic easily"],
+    images: ["/images/bike-1.jpeg", "/images/bike-2.jpeg", "/images/bike-3.jpeg"]
   },
-
   {
-  id: "car",
-  icon: Car,
-  title: "Car Rides",
-  color: "bg-indigo-50 text-indigo-800",
-  description: "Comfortable and spacious car transportation for longer distances, group travel, airport transfers, or when you need more room than a boda-boda offers. Perfect for moving with friends or carrying larger items.",
-  features: ["Comfortable seating", "Weather protection", "Group travel friendly", "Extra luggage space", "Long-distance capable"]
-},
-
+    id: "car",
+    icon: Car,
+    title: "Car Rides",
+    color: "bg-indigo-50 text-indigo-800",
+    description: "Comfortable and spacious car transportation for longer distances, group travel, or when you need more room than a boda-boda offers. Perfect for moving with friends or carrying larger items.",
+    features: ["Comfortable seating", "Weather protection", "Group travel friendly", "Extra luggage space"],
+    images: ["/images/car-1.jpeg", "/images/car-2.jpeg"]
+  },
   {
     id: "delivery",
     icon: Package,
     title: "Package Deliveries",
     color: "bg-blue-50 text-blue-800",
     description: "Send food, documents, groceries, or online purchases to any destination in Kabale. We treat your items with care and ensure they arrive safely and quickly.",
-    features: ["Real-time updates via WhatsApp", "Careful handling of items", "Food-safe delivery", "Business & personal deliveries"]
+    features: ["Real-time updates via WhatsApp", "Careful handling of items", "Food-safe delivery", "Business & personal deliveries"],
+    images: ["/images/cargo-1.jpeg", "/images/cargo-2.jpeg"]
   },
   {
     id: "moving",
@@ -44,7 +47,8 @@ const serviceDetails = [
     title: "Hostel & House Moving",
     color: "bg-purple-50 text-purple-800",
     description: "Moving from one hostel to another or shifting houses? Don't stress about the heavy lifting. Otuuse provides reliable transport for your luggage and belongings.",
-    features: ["Careful handling of luggage", "Spacious transport options", "Student-friendly rates", "Assistance with loading/unloading"]
+    features: ["Careful handling of luggage", "Spacious transport options", "Student-friendly rates", "Assistance with loading/unloading"],
+    images: ["/images/cargo-2.jpeg", "/images/cargo-1.jpeg", "/images/car-1.jpeg"]
   },
 ];
 
@@ -67,13 +71,13 @@ const Services = () => {
         {/* Services Grid */}
         <section className="py-20 bg-gray-50">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="space-y-16">
+            <div className="space-y-24">
               {serviceDetails.map((service, index) => {
                 const Icon = service.icon;
                 const isEven = index % 2 === 0;
                 
                 return (
-                  <div key={service.id} className={`grid lg:grid-cols-2 gap-12 items-center ${!isEven ? 'lg:flex-row-reverse' : ''}`}>
+                  <div key={service.id} className="grid lg:grid-cols-2 gap-12 items-center">
                     {/* Text Content */}
                     <div className={isEven ? 'lg:order-1' : 'lg:order-2'}>
                       <div className={`inline-flex w-14 h-14 rounded-xl ${service.color} items-center justify-center mb-4`}>
@@ -93,16 +97,16 @@ const Services = () => {
 
                       <Link 
                         to="/request-service" 
-                        state={{ serviceType: service.id }} // Passes the service type to the form
+                        state={{ serviceType: service.id }}
                         className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-bold transition"
                       >
                         Request {service.title} <ArrowRight size={18} />
                       </Link>
                     </div>
 
-                    {/* Visual Placeholder (You can add real images here later) */}
-                    <div className={`w-full h-64 lg:h-80 rounded-2xl bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
-                      <Icon size={80} className="text-green-800 opacity-20" />
+                    {/* Real Sliding Photos */}
+                    <div className={`w-full h-64 lg:h-96 rounded-2xl overflow-hidden shadow-lg ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
+                      <ImageSlider images={service.images} alt={service.title} className="h-full rounded-2xl" />
                     </div>
                   </div>
                 );

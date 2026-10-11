@@ -1,57 +1,36 @@
 import { Link } from "react-router-dom";
-import { GraduationCap, BookOpen, Building, Package, ArrowRight } from "lucide-react";
+import { GraduationCap, ArrowRight } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import ImageSlider from "../components/ImageSlider";
 
 const studentServices = [
   {
-    icon: BookOpen,
     title: "Need a Ride to Class?",
     description: "Running late for an 8 AM lecture? Skip the long walks and crowded taxi parks. Get a quick, affordable boda or bike ride straight to the Kabale University campus gates.",
-    color: "bg-green-50 text-green-800"
+    images: ["/images/boda-1.jpeg", "/images/bike-3.jpeg"],
   },
   {
-    icon: Building,
     title: "Moving Hostels?",
     description: "Semester ending or shifting to a new place? Don't break your back carrying mattresses and suitcases up Kabale's steep hills. Let our moving team handle your luggage safely.",
-    color: "bg-orange-50 text-orange-800"
+    images: ["/images/cargo-2.jpeg", "/images/cargo-1.jpeg"],
   },
   {
-    icon: Package,
     title: "Need Something Delivered?",
     description: "Forgot your notes at home? Need food delivered to your room while you study? We pick it up and drop it off exactly where you need it, fast.",
-    color: "bg-blue-50 text-blue-800"
+    images: ["/images/cargo-1.jpeg", "/images/boda-1.jpeg"],
   },
   {
-    icon: GraduationCap,
     title: "Group Travel or Events?",
     description: "Going for a group project, church event, or weekend trip? Book an Otuuse car ride for comfortable group transportation with your friends.",
-    color: "bg-indigo-50 text-indigo-800"
-  }
+    images: ["/images/car-1.jpeg", "/images/car-2.jpeg"],
+  },
 ];
 
 const Students = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 p-6 lg:p-8">
-        {studentServices.map((service) => {
-          const Icon = service.icon;
-          return (
-            <div key={service.title} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
-              <div className={`w-14 h-14 rounded-xl ${service.color} flex items-center justify-center mb-6`}>
-                <Icon size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-green-950 mb-3">{service.title}</h3>
-              <p className="text-gray-600 leading-relaxed mb-6">{service.description}</p>
-              <Link to="/request-service" className="inline-flex items-center gap-2 text-orange-500 font-semibold hover:text-orange-600 transition">
-                Book Now <ArrowRight size={18} />
-              </Link>
-            </div>
-          );
-        })}
-      </div>
 
       <main className="flex-grow">
         {/* Hero */}
@@ -68,30 +47,33 @@ const Students = () => {
           </div>
         </section>
 
-        {/* Services for Students */}
+        {/* Student services with sliding real photos */}
         <section className="py-20 bg-gray-50">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold text-green-950">How We Help You</h2>
-              <p className="mt-4 text-gray-600 max-w-xl mx-auto">We understand the unique challenges students face in Kabale. Here is how we make your day smoother.</p>
+              <p className="mt-4 text-gray-600 max-w-xl mx-auto">
+                We understand the unique challenges students face in Kabale. Here is how we make your day smoother.
+              </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {studentServices.map((service) => {
-                const Icon = service.icon;
-                return (
-                  <div key={service.title} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow">
-                    <div className={`w-14 h-14 rounded-xl ${service.color} flex items-center justify-center mb-6`}>
-                      <Icon size={28} />
-                    </div>
-                    <h3 className="text-xl font-bold text-green-950 mb-3">{service.title}</h3>
-                    <p className="text-gray-600 leading-relaxed mb-6">{service.description}</p>
-                    <Link to="/request-service" className="inline-flex items-center gap-2 text-orange-500 font-semibold hover:text-orange-600 transition">
-                      Book Now <ArrowRight size={18} />
-                    </Link>
-                  </div>
-                );
-              })}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {studentServices.map((service) => (
+                <div
+                  key={service.title}
+                  className="bg-white p-5 rounded-2xl border border-gray-100 hover:shadow-xl transition-shadow flex flex-col"
+                >
+                  <ImageSlider images={service.images} alt={service.title} />
+                  <h3 className="mt-5 text-lg font-bold text-green-950">{service.title}</h3>
+                  <p className="mt-3 text-gray-600 text-sm leading-relaxed flex-grow">{service.description}</p>
+                  <Link
+                    to="/request-service"
+                    className="inline-flex items-center gap-2 mt-5 text-orange-500 font-semibold hover:text-orange-600 transition"
+                  >
+                    Book Now <ArrowRight size={18} />
+                  </Link>
+                </div>
+              ))}
             </div>
           </div>
         </section>

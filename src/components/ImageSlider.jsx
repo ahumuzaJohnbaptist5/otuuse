@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const ImageSlider = ({ images, alt = "Otuuse service" }) => {
+const ImageSlider = ({ images, alt = "Otuuse service", className = "h-44 md:h-48" }) => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -12,7 +12,7 @@ const ImageSlider = ({ images, alt = "Otuuse service" }) => {
   }, [images.length]);
 
   return (
-    <div className="relative w-full h-44 md:h-48 overflow-hidden rounded-xl bg-green-50">
+    <div className={`relative w-full ${className} overflow-hidden rounded-xl bg-green-50`}>
       <div
         className="flex h-full transition-transform duration-700 ease-in-out"
         style={{ transform: `translateX(-${index * 100}%)` }}
@@ -28,14 +28,14 @@ const ImageSlider = ({ images, alt = "Otuuse service" }) => {
       </div>
 
       {images.length > 1 && (
-        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+        <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
           {images.map((_, i) => (
             <button
               key={i}
               onClick={() => setIndex(i)}
               aria-label={`Go to photo ${i + 1}`}
-              className={`w-2 h-2 rounded-full transition ${
-                i === index ? "bg-orange-500" : "bg-white/80"
+              className={`w-2.5 h-2.5 rounded-full transition ${
+                i === index ? "bg-orange-500" : "bg-white/80 shadow-sm"
               }`}
             />
           ))}
