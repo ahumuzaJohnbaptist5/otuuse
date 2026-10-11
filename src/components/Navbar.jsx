@@ -3,59 +3,72 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import logo from "../assets/logo.jpeg";
 
-const Navbar = () => {
+const Navbar = ({ transparent = false }) => {
   const [open, setOpen] = useState(false);
 
+  const link = "px-3 py-2 rounded-lg text-sm font-medium text-white hover:bg-orange-500 transition";
+  const electricLink = "px-3 py-2 rounded-lg text-sm font-semibold text-orange-300 hover:bg-orange-500 hover:text-white transition";
+  const mobileLink = "block px-4 py-3 rounded-lg text-white hover:bg-orange-500 transition";
+
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100">
+    <header
+      className={
+        transparent
+          ? "absolute top-0 left-0 right-0 z-50"
+          : "sticky top-0 z-50 bg-green-950/95 backdrop-blur border-b border-white/10"
+      }
+    >
       <nav className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="h-20 flex items-center justify-between">
 
-          <Link to="/" className="flex items-center gap-3">
-            <div className="bg-green-950 rounded-xl p-2 shadow-sm">
-              <img src={logo} alt="Otuuse Logo" className="h-9 md:h-11 w-auto object-contain" />
-            </div>
-            <p className="hidden sm:block text-[10px] uppercase tracking-widest text-gray-500 font-semibold">
-              Making life easy
-            </p>
+          {/* Logo (white logo sits cleanly on the dark navbar) */}
+          <Link to="/" className="flex items-center">
+            <img
+              src={logo}
+              alt="Otuuse Logo"
+              className="h-12 md:h-14 w-auto object-contain"
+            />
           </Link>
 
-          <div className="hidden lg:flex items-center gap-5 xl:gap-7">
-            <Link to="/" className="text-sm font-medium text-gray-700 hover:text-green-800">Home</Link>
-            <Link to="/about" className="text-sm font-medium text-gray-700 hover:text-green-800">About</Link>
-            <Link to="/services" className="text-sm font-medium text-gray-700 hover:text-green-800">Services</Link>
-            <Link to="/why-electric" className="text-sm font-medium text-green-700 hover:text-green-900 font-semibold">Why Electric</Link>
-            <Link to="/how-it-works" className="text-sm font-medium text-gray-700 hover:text-green-800">How It Works</Link>
-            <Link to="/students" className="text-sm font-medium text-gray-700 hover:text-green-800">Students</Link>
-            <Link to="/contact" className="text-sm font-medium text-gray-700 hover:text-green-800">Contact</Link>
+          {/* Desktop navigation */}
+          <div className="hidden lg:flex items-center gap-1 xl:gap-2">
+            <Link to="/" className={link}>Home</Link>
+            <Link to="/about" className={link}>About</Link>
+            <Link to="/services" className={link}>Services</Link>
+            <Link to="/why-electric" className={electricLink}>Why Electric</Link>
+            <Link to="/how-it-works" className={link}>How It Works</Link>
+            <Link to="/students" className={link}>Students</Link>
+            <Link to="/contact" className={link}>Contact</Link>
 
             <Link
               to="/request-service"
-              className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-xl font-semibold transition"
+              className="ml-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-xl font-semibold transition"
             >
               Request a Service
             </Link>
           </div>
 
-          <button onClick={() => setOpen(!open)} className="lg:hidden text-gray-700">
+          {/* Mobile button */}
+          <button onClick={() => setOpen(!open)} className="lg:hidden text-white">
             {open ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
 
+        {/* Mobile menu */}
         {open && (
-          <div className="lg:hidden pb-6 space-y-2">
-            <Link onClick={() => setOpen(false)} to="/" className="block px-4 py-3 rounded-lg hover:bg-gray-100">Home</Link>
-            <Link onClick={() => setOpen(false)} to="/about" className="block px-4 py-3 rounded-lg hover:bg-gray-100">About</Link>
-            <Link onClick={() => setOpen(false)} to="/services" className="block px-4 py-3 rounded-lg hover:bg-gray-100">Services</Link>
-            <Link onClick={() => setOpen(false)} to="/why-electric" className="block px-4 py-3 rounded-lg hover:bg-gray-100 text-green-700 font-semibold">Why Electric</Link>
-            <Link onClick={() => setOpen(false)} to="/how-it-works" className="block px-4 py-3 rounded-lg hover:bg-gray-100">How It Works</Link>
-            <Link onClick={() => setOpen(false)} to="/students" className="block px-4 py-3 rounded-lg hover:bg-gray-100">Students</Link>
-            <Link onClick={() => setOpen(false)} to="/contact" className="block px-4 py-3 rounded-lg hover:bg-gray-100">Contact</Link>
+          <div className="lg:hidden pb-6 space-y-1 bg-green-950/95 backdrop-blur rounded-b-2xl px-2">
+            <Link onClick={() => setOpen(false)} to="/" className={mobileLink}>Home</Link>
+            <Link onClick={() => setOpen(false)} to="/about" className={mobileLink}>About</Link>
+            <Link onClick={() => setOpen(false)} to="/services" className={mobileLink}>Services</Link>
+            <Link onClick={() => setOpen(false)} to="/why-electric" className={mobileLink}>Why Electric</Link>
+            <Link onClick={() => setOpen(false)} to="/how-it-works" className={mobileLink}>How It Works</Link>
+            <Link onClick={() => setOpen(false)} to="/students" className={mobileLink}>Students</Link>
+            <Link onClick={() => setOpen(false)} to="/contact" className={mobileLink}>Contact</Link>
 
             <Link
               onClick={() => setOpen(false)}
               to="/request-service"
-              className="block text-center bg-orange-500 text-white px-4 py-3 rounded-xl font-semibold mt-3"
+              className="block text-center bg-orange-500 hover:bg-orange-600 text-white px-4 py-3 rounded-xl font-semibold mt-3"
             >
               Request a Service
             </Link>

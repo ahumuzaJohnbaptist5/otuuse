@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin, Star, Zap, GraduationCap, Leaf, Wallet, VolumeX } from "lucide-react";
-import Navbar from "../components/Navbar";
+import { ArrowRight, Star, Zap, Leaf, Wallet, VolumeX } from "lucide-react";import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ImageSlider from "../components/ImageSlider";
 
@@ -60,30 +59,28 @@ const testimonials = [
 const Home = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      <Navbar transparent />
 
       {/* Hero */}
-      <section className="bg-green-950 text-white">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-28">
-          <div className="max-w-3xl">
-            <div className="flex flex-wrap gap-2 mb-6">
-              <span className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm">
-                <MapPin size={16} /> Serving Kabale, Uganda
-              </span>
-              <span className="inline-flex items-center gap-2 bg-orange-500/20 text-orange-300 px-4 py-2 rounded-full text-sm">
-                <Zap size={16} /> 100% Electric Fleet
-              </span>
-              <span className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm">
-                <GraduationCap size={16} /> Student-Focused
-              </span>
-            </div>
+      <section className="relative bg-green-950 text-white overflow-hidden">
+        {/* Background photo */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-cover bg-[position:70%_center]"
+          style={{ backgroundImage: "url('/images/background.jpeg')" }}
+        />
+        {/* Dark green overlay: keeps every word crisp and colors unchanged */}
+        <div aria-hidden="true" className="absolute inset-0 bg-green-950/75" />
+
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-32 pb-20 lg:pt-40 lg:pb-28">
+          <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight">
               Moving Kabale, <span className="text-orange-400 block">One Ride at a Time.</span>
             </h1>
-            <p className="mt-6 text-lg lg:text-xl text-green-100 max-w-2xl leading-relaxed">
+            <p className="mt-6 text-lg lg:text-xl text-green-100 max-w-2xl mx-auto leading-relaxed">
               Reliable, eco-friendly transportation, deliveries and moving services — powered by electricity and designed for Kabale University students and the wider Kabale community.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/request-service" className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 px-6 py-4 rounded-xl font-bold transition">
                 Request a Service <ArrowRight size={20} />
               </Link>
@@ -94,7 +91,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
       {/* Stats */}
       <section className="py-16 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
