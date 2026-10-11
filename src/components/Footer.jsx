@@ -17,6 +17,8 @@ const Footer = () => {
       className="h-12 md:h-14 w-auto object-contain"
     />
   </div>
+  
+  <li><Link to="/why-electric" className="hover:text-orange-400 transition">Why Electric</Link></li>
   <p className="text-sm text-green-300 mb-4 max-w-xs leading-relaxed">
     Reliable transportation, deliveries, and moving services in Kabale. Moving Kabale, one ride at a time.
   </p>
@@ -47,6 +49,7 @@ const Footer = () => {
               <li><Link to="/services" className="hover:text-orange-400 transition">Car Rides</Link></li>
               <li><Link to="/services" className="hover:text-orange-400 transition">Package Delivery</Link></li>
               <li><Link to="/services" className="hover:text-orange-400 transition">Hostel Moving</Link></li>
+              <li><Link to="/why-electric" className="hover:text-orange-400 transition">Why Electric</Link></li>
             </ul>
           </div>
 
