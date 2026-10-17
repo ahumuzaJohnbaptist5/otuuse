@@ -19,7 +19,7 @@ const team = [
     image: "/images/team-2.jpeg",
   },
   {
-    name: "AUTUHAIRE TRACY",
+    name: "AMUTUHAIRE TRACY",
     role: "Co-Founder & Customer Experience",
     bio: "Makes sure every customer request is handled fast and friendly, from WhatsApp bookings to doorstep deliveries.",
     image: "/images/team-3.jpeg",
