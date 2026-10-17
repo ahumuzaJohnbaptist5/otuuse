@@ -8,6 +8,7 @@ import WhyElectric from "./pages/WhyElectric";
 import RequestService from "./pages/RequestService";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
+import Partners from "./pages/Partners";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/request-service" element={<RequestService />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/partners" element={<Partners />} />
       </Routes>
     </BrowserRouter>
   );
