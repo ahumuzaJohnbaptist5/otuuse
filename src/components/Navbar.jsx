@@ -6,11 +6,14 @@ import logo from "../assets/logo.jpeg";
 const Navbar = ({ transparent = false }) => {
   const [open, setOpen] = useState(false);
 
-  const links = [
+  const primaryLinks = [
     { label: "Home", to: "/" },
     { label: "About", to: "/about" },
-    { label: "Partners", to: "/partners" },
     { label: "Services", to: "/services" },
+    { label: "Partners", to: "/partners" },
+  ];
+
+  const moreLinks = [
     { label: "Why Electric", to: "/why-electric" },
     { label: "How It Works", to: "/how-it-works" },
     { label: "Students", to: "/students" },
@@ -24,9 +27,9 @@ const Navbar = ({ transparent = false }) => {
     <header
       className={`relative z-50 ${transparent
         ? "absolute top-0 left-0 right-0"
-        : "sticky top-0 bg-green-950/95 backdrop-blur border-b border-white/10"}`}
+        : "sticky top-0 bg-white/95 backdrop-blur border-b border-gray-200"}`}
     >
-      <nav className="max-w-7xl mx-auto px-6 lg:px-8" aria-label="Main navigation">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <div className="h-20 flex items-center justify-between gap-4">
           <Link to="/" onClick={closeMenu} className="flex items-center shrink-0" aria-label="Otuuse home">
             <img
@@ -36,17 +39,31 @@ const Navbar = ({ transparent = false }) => {
             />
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 lg:gap-5">
+            <div className="hidden md:flex items-center gap-4 lg:gap-6">
+              {primaryLinks.map(({ label, to }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={closeMenu}
+                  className="text-sm lg:text-base font-semibold text-gray-800 hover:text-orange-500 transition whitespace-nowrap"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+
             <Link
               to="/request-service"
-              className="hidden sm:inline-flex items-center bg-orange-500 hover:bg-orange-600 text-white px-4 md:px-5 py-3 rounded-xl font-semibold transition"
+              className="hidden sm:inline-flex items-center bg-orange-500 hover:bg-orange-600 text-white px-4 md:px-5 py-3 rounded-xl font-semibold transition whitespace-nowrap"
             >
               Request a Service
             </Link>
+
             <button
               type="button"
               onClick={() => setOpen((current) => !current)}
-              className="inline-flex items-center justify-center w-12 h-12 rounded-xl border border-white/20 text-white hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="inline-flex items-center justify-center w-12 h-12 rounded-xl border border-gray-200 text-gray-800 hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-orange-400"
               aria-label={open ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={open}
               aria-controls="otuuse-navigation-menu"
@@ -66,30 +83,30 @@ const Navbar = ({ transparent = false }) => {
             />
             <div
               id="otuuse-navigation-menu"
-              className="absolute z-50 right-4 left-4 sm:left-auto sm:right-6 top-full sm:w-[25rem] rounded-2xl border border-white/10 bg-green-950 shadow-2xl p-4 sm:p-5"
+              className="absolute z-50 right-4 left-4 sm:left-auto sm:right-6 top-full sm:w-[25rem] rounded-2xl border border-gray-200 bg-white shadow-2xl p-4 sm:p-5"
             >
-              <div className="flex items-center justify-between px-2 pb-3 border-b border-white/10">
+              <div className="flex items-center justify-between px-2 pb-3 border-b border-gray-100">
                 <div>
-                  <p className="text-white font-bold text-lg">Explore Otuuse</p>
-                  <p className="text-green-200 text-sm">Where would you like to go?</p>
+                  <p className="text-gray-900 font-bold text-lg">Explore Otuuse</p>
+                  <p className="text-gray-500 text-sm">More pages and information</p>
                 </div>
-                <span className="text-orange-400"><Menu size={22} /></span>
+                <span className="text-orange-500"><Menu size={22} /></span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 mt-3">
-                {links.map(({ label, to }) => (
+                {moreLinks.map(({ label, to }) => (
                   <Link
                     key={to}
                     to={to}
                     onClick={closeMenu}
                     className={`flex items-center justify-between gap-2 rounded-xl px-3 py-3 text-sm font-medium transition ${
                       label === "Why Electric"
-                        ? "text-orange-300 hover:bg-orange-500 hover:text-white"
-                        : "text-white hover:bg-white/10"
+                        ? "text-orange-600 hover:bg-orange-500 hover:text-white"
+                        : "text-gray-800 hover:bg-gray-100"
                     }`}
                   >
                     <span>{label}</span>
-                    <ChevronRight size={16} className="text-orange-400 shrink-0" />
+                    <ChevronRight size={16} className="text-orange-500 shrink-0" />
                   </Link>
                 ))}
               </div>
