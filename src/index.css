@@ -3,7 +3,37 @@
 html {
   scroll-behavior: smooth;
 }
+
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+/* Shared light/dark appearance for common page surfaces and text. */
+body.dark-mode {
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+body.dark-mode [class~="bg-white"],
+body.dark-mode [class~="bg-gray-50"],
+body.dark-mode [class~="bg-gray-100"] {
+  background-color: #1f2937;
+}
+
+body.dark-mode [class~="text-gray-900"],
+body.dark-mode [class~="text-gray-800"],
+body.dark-mode [class~="text-gray-700"] {
+  color: #f3f4f6;
+}
+
+body.dark-mode [class~="text-gray-600"],
+body.dark-mode [class~="text-gray-500"] {
+  color: #d1d5db;
+}
+
+body.dark-mode [class~="border-gray-100"],
+body.dark-mode [class~="border-gray-200"] {
+  border-color: #374151;
 }
