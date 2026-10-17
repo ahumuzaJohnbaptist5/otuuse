@@ -34,6 +34,7 @@ const Navbar = ({ transparent = false }) => {
           <div className="hidden lg:flex items-center gap-1 xl:gap-2">
             <Link to="/" className={link}>Home</Link>
             <Link to="/about" className={link}>About</Link>
+            <Link to="/partners" className={link}>Partners</Link>
             <Link to="/services" className={link}>Services</Link>
             <Link to="/why-electric" className={electricLink}>Why Electric</Link>
             <Link to="/how-it-works" className={link}>How It Works</Link>
@@ -59,6 +60,7 @@ const Navbar = ({ transparent = false }) => {
           <div className="lg:hidden pb-6 space-y-1 bg-green-950/95 backdrop-blur rounded-b-2xl px-2">
             <Link onClick={() => setOpen(false)} to="/" className={mobileLink}>Home</Link>
             <Link onClick={() => setOpen(false)} to="/about" className={mobileLink}>About</Link>
+            <Link onClick={() => setOpen(false)} to="/partners" className={mobileLink}>Partners</Link>
             <Link onClick={() => setOpen(false)} to="/services" className={mobileLink}>Services</Link>
             <Link onClick={() => setOpen(false)} to="/why-electric" className={mobileLink}>Why Electric</Link>
             <Link onClick={() => setOpen(false)} to="/how-it-works" className={mobileLink}>How It Works</Link>
