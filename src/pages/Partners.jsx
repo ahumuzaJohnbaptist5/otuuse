@@ -1,4 +1,4 @@
-import { Handshake, Bike, Car, Store, Building2, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Handshake, Bike, Car, Store, Building2, ArrowRight, CheckCircle2, UtensilsCrossed, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -30,6 +30,19 @@ const partnerTypes = [
   },
 ];
 
+const localPartners = [
+  {
+    name: "Chris' Restaurant",
+    location: "Kabale University",
+    description: "A local restaurant partner based at Kabale University.",
+  },
+  {
+    name: "Manziz Restaurant",
+    location: "Kabale Town",
+    description: "A restaurant partner located in Kabale town.",
+  },
+];
+
 const Partners = () => (
   <div className="min-h-screen flex flex-col">
     <Navbar />
@@ -41,9 +54,38 @@ const Partners = () => (
           <p className="mt-5 text-lg lg:text-xl text-green-100 max-w-3xl mx-auto">
             We work with local riders, drivers, businesses, and institutions to make transportation and delivery more reliable across Kabale.
           </p>
-          <a href="#partner-types" className="inline-flex items-center gap-2 mt-8 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition">
-            Explore partnerships <ArrowRight size={18} />
+          <a href="#local-partners" className="inline-flex items-center gap-2 mt-8 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition">
+            Meet our partners <ArrowRight size={18} />
           </a>
+        </div>
+      </section>
+
+      <section id="local-partners" className="py-16 lg:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <p className="text-orange-500 font-bold uppercase tracking-wider text-sm">Working together locally</p>
+            <h2 className="mt-3 text-3xl lg:text-4xl font-bold text-green-950">Our Local Business Partners</h2>
+            <p className="mt-4 text-gray-600">
+              We are proud to work with local businesses in Kabale. Meet the restaurants currently partnering with Otuuse.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {localPartners.map(({ name, location, description }) => (
+              <article key={name} className="group rounded-2xl border border-gray-200 bg-gray-50 p-7 sm:p-8 shadow-sm hover:shadow-lg hover:border-orange-200 transition">
+                <div className="w-14 h-14 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+                  <UtensilsCrossed size={27} />
+                </div>
+                <p className="mt-6 text-xs font-bold uppercase tracking-wider text-green-700">Otuuse Partner</p>
+                <h3 className="mt-2 text-2xl font-bold text-green-950">{name}</h3>
+                <p className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-600">
+                  <MapPin size={17} className="text-orange-500 shrink-0" />
+                  {location}
+                </p>
+                <p className="mt-4 text-gray-600 leading-relaxed">{description}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
