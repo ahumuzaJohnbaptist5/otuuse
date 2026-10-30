@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Send, MapPin, Phone, Clock, FileText } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const RequestService = () => {
   const [formData, setFormData] = useState({
+    customer_name: "",
     service: "",
     pickup: "",
     destination: "",
@@ -13,60 +14,59 @@ const RequestService = () => {
     time: "",
   });
 
+  const [services, setServices] = useState([]);
+  const [loadingServices, setLoadingServices] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [confirmation, setConfirmation] = useState(null);
+  const apiBase = "https://otuuse-api.onrender.com";
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(apiBase + "/api/services/", { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Services unavailable");
+        return response.json();
+      })
+      .then((data) => setServices(Array.isArray(data) ? data : data.results || []))
+      .catch((err) => { if (err.name !== "AbortError") setError("Unable to load services. Please try again."); })
+      .finally(() => setLoadingServices(false));
+    return () => controller.abort();
+  }, []);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Map service IDs to readable names
-    const serviceNames = {
-  boda: "Boda Ride",
-  bike: "Bike Hire",
-  car: "Car Ride",
-  delivery: "Package Delivery",
-  moving: "Hostel/House Moving",
-};
-    // Construct the WhatsApp message
-    const whatsappMessage = encodeURIComponent(
-      `*🚀 NEW OTUUSE SERVICE REQUEST*\n\n` +
-      `*Service:* ${serviceNames[formData.service] || formData.service}\n` +
-      `*Pickup:* ${formData.pickup}\n` +
-      `*Destination:* ${formData.destination}\n` +
-      `*Phone:* ${formData.phone}\n` +
-      `*Preferred Time:* ${formData.time || "ASAP"}\n` +
-      `*Details:* ${formData.description || "None"}\n\n` +
-      `_Sent from otuuse.com_`
-    );
-
-    // ⚠️ REPLACE THIS WITH YOUR ACTUAL WHATSAPP NUMBER (country code + number, no + sign)
-    const whatsappNumber = "256791475407";
-
-    // Open WhatsApp with the pre-filled message
-    window.open(`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`, "_blank");
-
-    // Show confirmation
-    alert("Opening WhatsApp to send your request... If WhatsApp doesn't open, please call us directly.");
-
-    // Reset form
-    setFormData({
-      service: "",
-      pickup: "",
-      destination: "",
-      phone: "",
-      description: "",
-      time: "",
-    });
+    if (submitting) return;
+    setError("");
+    setConfirmation(null);
+    setSubmitting(true);
+    try {
+      const response = await fetch(apiBase + "/api/bookings/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer_name: formData.customer_name.trim(),
+          service: Number(formData.service),
+          pickup: formData.pickup.trim(),
+          destination: formData.destination.trim(),
+          phone: formData.phone.trim(),
+          notes: [formData.time && "Preferred time: " + formData.time, formData.description].filter(Boolean).join("\n"),
+        }),
+      });
+      if (!response.ok) throw new Error("Your booking could not be saved. Please check the details and try again.");
+      const booking = await response.json();
+      setConfirmation(booking.id);
+      setFormData({ customer_name: "", service: "", pickup: "", destination: "", phone: "", description: "", time: "" });
+    } catch (err) {
+      setError(err.message || "Unable to submit your booking right now.");
+    } finally {
+      setSubmitting(false);
+    }
   };
-
-  const serviceOptions = [
-  { id: "boda", label: "Boda Ride", icon: "🛵" },
-  { id: "bike", label: "Bike Hire", icon: "🚲" },
-  { id: "car", label: "Car Ride", icon: "🚗" },
-  { id: "delivery", label: "Delivery", icon: "📦" },
-  { id: "moving", label: "Moving", icon: "🏠" },
-];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -78,22 +78,28 @@ const RequestService = () => {
           <div className="text-center mb-12">
             <h1 className="text-4xl lg:text-5xl font-extrabold text-green-950">Request a Service</h1>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              Fill out the form below. Your request will be sent directly to our WhatsApp for instant processing.
+              Fill out the form below. Your booking will be sent directly to the Otuuse team.
             </p>
           </div>
 
           <div className="bg-white rounded-2xl shadow-xl p-8 lg:p-12 border border-gray-100">
+            {error && <p role="alert" className="mb-6 rounded-xl bg-red-50 p-4 text-red-800">{error}</p>}
+            {confirmation && <p role="status" className="mb-6 rounded-xl bg-green-50 p-4 text-green-900">Booking #{confirmation} received successfully! Our team will contact you.</p>}
             <form onSubmit={handleSubmit} className="space-y-8">
+              <div>
+                <label htmlFor="customer_name" className="block text-sm font-semibold text-gray-700 mb-2">Your Full Name *</label>
+                <input id="customer_name" name="customer_name" type="text" maxLength={100} required value={formData.customer_name} onChange={handleChange} className="w-full px-4 py-3 border border-gray-200 rounded-xl" placeholder="Your full name" />
+              </div>
               
               {/* Service Type Selection */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">What service do you need? *</label>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                  {serviceOptions.map((option) => (
+                  {services.map((option) => (
                     <label
                       key={option.id}
                       className={`flex flex-col items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                        formData.service === option.id
+                        formData.service === String(option.id)
                           ? "border-orange-500 bg-orange-50 text-orange-700 shadow-sm"
                           : "border-gray-200 hover:border-green-300 text-gray-600"
                       }`}
@@ -101,19 +107,21 @@ const RequestService = () => {
                       <input
                         type="radio"
                         name="service"
-                        value={option.id}
-                        checked={formData.service === option.id}
+                        value={String(option.id)}
+                        checked={formData.service === String(option.id)}
                         onChange={handleChange}
                         className="sr-only"
                         required
                       />
-                      <span className="text-3xl mb-2">{option.icon}</span>
-                      <span className="text-sm font-medium">{option.label}</span>
+                      <span className="text-3xl mb-2">🚗</span>
+                      <span className="text-sm font-medium">{option.name}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
+              {loadingServices && <p role="status">Loading available services...</p>}
+              {!loadingServices && services.length === 0 && <p>No services are currently available for online booking.</p>}
               {/* Locations */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
@@ -200,13 +208,14 @@ const RequestService = () => {
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20"
+                disabled={submitting || loadingServices || services.length === 0}
+                className="w-full disabled:opacity-50 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20"
               >
-                Send Request via WhatsApp <Send size={20} />
+                {submitting ? "Submitting..." : "Submit Booking"} <Send size={20} />
               </button>
 
               <p className="text-center text-sm text-gray-500 mt-4">
-                Your request will open in WhatsApp. Press send to complete the booking.
+                Your booking will be recorded. Our team will contact you to confirm availability.
               </p>
             </form>
           </div>
