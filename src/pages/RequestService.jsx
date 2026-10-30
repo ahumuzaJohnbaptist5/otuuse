@@ -58,7 +58,8 @@ const RequestService = () => {
     setFormData(old => ({ ...old, [mapTarget]: name }));
   };
   const useGPS = () => {
-    if (!navigator.geolocation) { setLocationMessage("GPS unavailable. Please use the map."); return; }
+    if (!window.isSecureContext) { setLocationMessage("GPS requires HTTPS. Open the secure OTUUSE website or use the map."); return; }
+    if (!navigator.geolocation) { setLocationMessage("This browser does not support location detection. Please use the map."); return; }
     setLocating(true); setLocationMessage("");
     navigator.geolocation.getCurrentPosition(async ({ coords: position }) => {
       const point = { lat: position.latitude, lng: position.longitude };
@@ -69,8 +70,16 @@ const RequestService = () => {
         setFormData(old => ({ ...old, pickup: name }));
       } catch { setLocationMessage("GPS coordinates found. Place name unavailable; you may edit the pickup."); }
       setLocating(false);
-    }, () => { setLocating(false); setLocationMessage("Location access failed or was denied. Select your pickup on the map."); },
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 });
+    }, (err) => {
+      setLocating(false);
+      const messages = {
+        1: "Location permission was denied. Enable location permission for this website in your browser settings, then try again.",
+        2: "Your device could not determine its location. Enable device location services or select a pickup on the map.",
+        3: "Location detection timed out. Try moving to an area with a better GPS signal or use the map.",
+      };
+      setLocationMessage(messages[err.code] || "Location detection failed. You can choose your pickup on the map.");
+    },
+    { enableHighAccuracy: false, timeout: 30000, maximumAge: 60000 });
   };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
