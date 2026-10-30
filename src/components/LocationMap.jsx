@@ -16,10 +16,16 @@ function loadLeaflet() {
       }
       const script = document.createElement("script");
       script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-      script.integrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";
       script.crossOrigin = "";
       script.onload = () => resolve(window.L);
-      script.onerror = () => { leafletPromise = null; reject(new Error("Unable to load the map.")); };
+      script.onerror = () => {
+        script.remove();
+        const backup = document.createElement("script");
+        backup.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js";
+        backup.onload = () => window.L ? resolve(window.L) : reject(new Error("Map library unavailable."));
+        backup.onerror = () => { leafletPromise = null; reject(new Error("The map could not load. Check your connection or try again later.")); };
+        document.body.appendChild(backup);
+      };
       document.body.appendChild(script);
     });
   }
