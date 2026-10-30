@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Send, MapPin, Phone, Clock, FileText } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import LocationMap, { reverseGeocode } from "../components/LocationMap";
 
 const RequestService = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,10 @@ const RequestService = () => {
   const [error, setError] = useState("");
   const [confirmation, setConfirmation] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [coords, setCoords] = useState({ pickup: null, destination: null });
+  const [mapTarget, setMapTarget] = useState(null);
+  const [locating, setLocating] = useState(false);
+  const [locationMessage, setLocationMessage] = useState("");
   const apiBase = "https://otuuse-api.onrender.com";
 
   useEffect(() => {
@@ -48,8 +53,28 @@ const RequestService = () => {
     return () => { clearTimeout(timeout); controller.abort(); };
   }, [retryCount]);
 
+  const chooseLocation = ({ lat, lng, name }) => {
+    setCoords(old => ({ ...old, [mapTarget]: { lat, lng } }));
+    setFormData(old => ({ ...old, [mapTarget]: name }));
+  };
+  const useGPS = () => {
+    if (!navigator.geolocation) { setLocationMessage("GPS unavailable. Please use the map."); return; }
+    setLocating(true); setLocationMessage("");
+    navigator.geolocation.getCurrentPosition(async ({ coords: position }) => {
+      const point = { lat: position.latitude, lng: position.longitude };
+      setCoords(old => ({ ...old, pickup: point }));
+      setFormData(old => ({ ...old, pickup: "Current GPS location" }));
+      try {
+        const name = await reverseGeocode(point.lat, point.lng);
+        setFormData(old => ({ ...old, pickup: name }));
+      } catch { setLocationMessage("GPS coordinates found. Place name unavailable; you may edit the pickup."); }
+      setLocating(false);
+    }, () => { setLocating(false); setLocationMessage("Location access failed or was denied. Select your pickup on the map."); },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 });
+  };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (["pickup", "destination"].includes(e.target.name)) setCoords(old => ({ ...old, [e.target.name]: null }));
   };
 
   const handleSubmit = async (e) => {
@@ -68,12 +93,17 @@ const RequestService = () => {
           pickup: formData.pickup.trim(),
           destination: formData.destination.trim(),
           phone: formData.phone.trim(),
-          notes: [formData.time && "Preferred time: " + formData.time, formData.description].filter(Boolean).join("\n"),
+          notes: [formData.time && "Preferred time: " + formData.time, formData.description,
+            coords.pickup && "Pickup GPS: " + coords.pickup.lat.toFixed(6) + ", " + coords.pickup.lng.toFixed(6),
+            coords.destination && "Destination GPS: " + coords.destination.lat.toFixed(6) + ", " + coords.destination.lng.toFixed(6)
+          ].filter(Boolean).join("\n"),
         }),
       });
       if (!response.ok) throw new Error("Your booking could not be saved. Please check the details and try again.");
       const booking = await response.json();
       setConfirmation(booking.id);
+      setCoords({ pickup: null, destination: null });
+      setMapTarget(null);
       setFormData({ customer_name: "", service: "", pickup: "", destination: "", phone: "", description: "", time: "" });
     } catch (err) {
       setError(err.message || "Unable to submit your booking right now.");
@@ -169,6 +199,19 @@ const RequestService = () => {
                   </div>
                 </div>
               </div>
+
+              <section className="rounded-xl bg-green-50 p-4 space-y-3">
+                <h3 className="font-bold text-green-950">GPS and map selection</h3>
+                <p className="text-sm text-gray-700">Use GPS to fill your pickup, or select pickup and destination by tapping the map. You can also type locations manually.</p>
+                {locationMessage && <p role="status" className="text-sm text-red-800">{locationMessage}</p>}
+                <div className="flex flex-wrap gap-3">
+                  <button type="button" onClick={useGPS} disabled={locating} className="bg-green-800 text-white rounded-lg px-4 py-2 disabled:opacity-50">{locating ? "Locating..." : "Use my current location"}</button>
+                  <button type="button" onClick={() => setMapTarget("pickup")} className="border border-green-800 rounded-lg px-4 py-2">Choose pickup on map</button>
+                  <button type="button" onClick={() => setMapTarget("destination")} className="border border-green-800 rounded-lg px-4 py-2">Choose destination on map</button>
+                </div>
+                {["pickup", "destination"].map(key => coords[key] && <p key={key} className="text-sm text-green-900">{key} coordinates: {coords[key].lat.toFixed(6)}, {coords[key].lng.toFixed(6)}</p>)}
+                {mapTarget && <LocationMap key={mapTarget} onSelect={chooseLocation} onClose={() => setMapTarget(null)} initialPosition={coords[mapTarget] ? [coords[mapTarget].lat, coords[mapTarget].lng] : coords.pickup ? [coords.pickup.lat, coords.pickup.lng] : null} />}
+              </section>
 
               {/* Contact & Time */}
               <div className="grid md:grid-cols-2 gap-6">
