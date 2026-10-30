@@ -84,6 +84,13 @@ export function AdminDashboard({ section = "dashboard" }) {
       setDriverSaving(false);
     }
   };
+  const resendWelcome = async (driverId) => {
+    setError(""); setDriverNotice("");
+    try {
+      const result = await request("drivers/" + driverId + "/resend-welcome/", { method: "POST" });
+      setDriverNotice(result.detail || "Email sent to the configured mail server.");
+    } catch (err) { setError(err.message); }
+  };
   const logout = async () => {
     try { await request("logout/", { method: "POST" }); } catch {}
     sessionStorage.removeItem("otuuse-admin-token"); navigate("/admin/login", { replace: true });
@@ -112,7 +119,7 @@ export function AdminDashboard({ section = "dashboard" }) {
       {error && <p role="alert" className="bg-red-50 text-red-800 p-4 rounded-lg mb-5">{error}</p>}
       {loading ? <p>Loading dashboard...</p> : section === "dashboard" && data ? <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">{Object.entries(data).map(([key,value])=><div key={key} className="bg-white shadow-sm rounded-2xl p-7 border"><p className="text-gray-500 capitalize">{key.replaceAll("_"," ")}</p><p className="text-4xl font-extrabold text-green-950 mt-3">{value}</p></div>)}</div>
       : section === "bookings" && Array.isArray(data) ? <div className="space-y-4">{data.map(b=><article key={b.id} className="bg-white rounded-xl border shadow-sm p-5"><div className="flex flex-wrap justify-between gap-2"><h2 className="font-bold text-green-950">#{b.id} · {b.customer_name} · {b.service}</h2><span className="text-sm font-semibold">{b.status}</span></div><p className="mt-2 text-gray-600">{b.pickup} → {b.destination}</p><p className="text-gray-600">Contact: {b.phone}</p><div className="flex flex-wrap gap-3 mt-4"><label className="text-sm">Assign driver<select aria-label={"Assign driver to booking "+b.id} value={b.driver_id || ""} onChange={e=>updateBooking(b.id,{driver_id:e.target.value || null})} className="block border rounded-lg p-2 mt-1"><option value="">Unassigned</option>{drivers.map(d=><option key={d.id} value={d.id}>{d.name} · {d.vehicle_type}</option>)}</select></label><label className="text-sm">Booking status<select aria-label={"Status for booking "+b.id} value={b.status} onChange={e=>updateBooking(b.id,{status:e.target.value})} className="block border rounded-lg p-2 mt-1">{["PENDING","CONFIRMED","ASSIGNED","IN_PROGRESS","COMPLETED","CANCELLED"].map(x=><option key={x}>{x}</option>)}</select></label></div></article>)}{data.length===0&&<p>No bookings yet.</p>}</div>
-      : Array.isArray(data) ? <div className="bg-white rounded-xl shadow-sm border overflow-x-auto"><table className="w-full text-left"><thead className="bg-green-50"><tr>{(section==="drivers"?["Name","Email","Phone","Vehicle","Status"]:["Service","Active","Base fare (UGX)","Per km (UGX)"]).map(x=><th key={x} className="p-4">{x}</th>)}</tr></thead><tbody>{data.map(item=><tr key={item.id} className="border-t">{(section==="drivers"?[item.name,item.email,item.phone,item.vehicle_type,item.status]:[item.name,item.is_active?"Yes":"No",item.base_price_ugx,item.per_km_ugx]).map((value,i)=><td key={i} className="p-4">{value}</td>)}</tr>)}</tbody></table></div> : <p>Unable to display data.</p>}
+      : Array.isArray(data) ? <div className="bg-white rounded-xl shadow-sm border overflow-x-auto"><table className="w-full text-left"><thead className="bg-green-50"><tr>{(section==="drivers"?["Name","Email","Phone","Vehicle","Status","Notification"]:["Service","Active","Base fare (UGX)","Per km (UGX)"]).map(x=><th key={x} className="p-4">{x}</th>)}</tr></thead><tbody>{data.map(item=><tr key={item.id} className="border-t">{(section==="drivers"?[item.name,item.email,item.phone,item.vehicle_type,item.status,<button type="button" onClick={()=>resendWelcome(item.id)} className="bg-green-900 text-white px-3 py-2 rounded-lg">Resend Welcome Email</button>]:[item.name,item.is_active?"Yes":"No",item.base_price_ugx,item.per_km_ugx]).map((value,i)=><td key={i} className="p-4">{value}</td>)}</tr>)}</tbody></table></div> : <p>Unable to display data.</p>}
     </main>
   </div>;
 }
