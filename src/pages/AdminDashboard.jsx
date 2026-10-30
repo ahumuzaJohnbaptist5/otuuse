@@ -34,6 +34,14 @@ export function AdminLogin() {
       <Link to="/" className="text-green-800 font-bold">← OTUUSE website</Link>
       <h1 className="text-3xl font-extrabold text-green-950">Administrator Login</h1>
       <p className="text-gray-600">Only authorized OTUUSE staff can access this area.</p>
+      {section === "drivers" && <div className="mb-5"><button type="button" onClick={() => setShowDriverForm(value => !value)} className="bg-orange-500 text-white font-bold rounded-lg px-5 py-3">{showDriverForm ? "Cancel" : "+ Add New Driver"}</button></div>}
+      {driverNotice && <p role="status" className="bg-green-100 text-green-900 p-4 rounded-lg mb-5">{driverNotice}</p>}
+      {section === "drivers" && showDriverForm && <form onSubmit={addDriver} className="bg-white border rounded-xl p-6 mb-6 grid sm:grid-cols-2 gap-4">
+        {[[ "name", "Full name" ], [ "email", "Email address" ], [ "phone", "Phone number" ], [ "license_number", "Driving licence number (optional)" ]].map(([key,label]) => <label key={key} className="font-semibold text-sm">{label}<input name={key} type={key === "email" ? "email" : "text"} required={key !== "license_number"} maxLength={key === "license_number" ? 50 : 150} className="block w-full border rounded-lg p-3 mt-2" /></label>)}
+        <label className="font-semibold text-sm">Vehicle type<select name="vehicle_type" required className="block w-full border rounded-lg p-3 mt-2"><option value="boda">Boda-Boda</option><option value="bike">Bike</option><option value="car">Car</option><option value="delivery">Delivery</option><option value="moving">Moving</option></select></label>
+        <label className="flex items-center gap-2 font-semibold text-sm"><input name="is_electric" type="checkbox" /> Electric vehicle</label>
+        <button disabled={driverSaving} className="bg-green-900 text-white font-bold rounded-lg p-3 disabled:opacity-50">{driverSaving ? "Registering..." : "Register Driver"}</button>
+      </form>}
       {error && <p role="alert" className="text-red-700 bg-red-50 rounded-lg p-3">{error}</p>}
       <label className="block font-semibold">Username<input autoComplete="username" required value={username} onChange={e=>setUsername(e.target.value)} className="mt-2 w-full border rounded-lg p-3"/></label>
       <label className="block font-semibold">Password<input autoComplete="current-password" type="password" required value={password} onChange={e=>setPassword(e.target.value)} className="mt-2 w-full border rounded-lg p-3"/></label>
@@ -55,6 +63,9 @@ export function AdminDashboard({ section = "dashboard" }) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(0);
+  const [showDriverForm, setShowDriverForm] = useState(false);
+  const [driverSaving, setDriverSaving] = useState(false);
+  const [driverNotice, setDriverNotice] = useState("");
   useEffect(() => {
     if (!sessionStorage.getItem("otuuse-admin-token")) { navigate("/admin/login", { replace: true }); return; }
     let active = true; setLoading(true); setError("");
@@ -64,6 +75,23 @@ export function AdminDashboard({ section = "dashboard" }) {
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [section, refresh, navigate]);
+  const addDriver = async (event) => {
+    event.preventDefault();
+    setDriverSaving(true); setError(""); setDriverNotice("");
+    const form = new FormData(event.currentTarget);
+    const payload = Object.fromEntries(form.entries());
+    payload.is_electric = form.has("is_electric");
+    try {
+      await request("drivers/", { method: "POST", body: JSON.stringify(payload) });
+      setDriverNotice("Driver registered. A welcome email has been requested.");
+      setShowDriverForm(false);
+      setRefresh(value => value + 1);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDriverSaving(false);
+    }
+  };
   const logout = async () => {
     try { await request("logout/", { method: "POST" }); } catch {}
     sessionStorage.removeItem("otuuse-admin-token"); navigate("/admin/login", { replace: true });
