@@ -108,7 +108,7 @@ const RequestService = () => {
                         type="radio"
                         name="service"
                         value={String(option.id)}
-                        checked={formData.service === option.id}
+                        checked={formData.service === String(option.id)}
                         onChange={handleChange}
                         className="sr-only"
                         required
@@ -122,7 +122,7 @@ const RequestService = () => {
 
               {loadingServices && <p role="status">Loading available services...</p>}
               {!loadingServices && services.length === 0 && <p>No services are currently available for online booking.</p>}
-              {/* Locations */
+              {/* Locations */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Pickup Location *</label>
