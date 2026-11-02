@@ -4,9 +4,9 @@ import logo from "../assets/logo.jpeg"; // Added logo import
 
 const Footer = () => {
   return (
-    <footer className="bg-green-950 text-green-100 pt-16 pb-8 mt-auto">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+    <footer className="bg-green-950 text-green-100 pt-8 sm:pt-12 pb-6 mt-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 sm:gap-8 mb-8">
           
           {/* Brand */}
 <div>
@@ -18,7 +18,7 @@ const Footer = () => {
     />
   </div>
 
-  <li><Link to="/why-electric" className="hover:text-orange-400 transition">Why Electric</Link></li>
+  <Link to="/why-electric" className="inline-block text-sm mb-2 hover:text-orange-400 transition">Why Electric</Link>
   <p className="text-sm text-green-300 mb-4 max-w-xs leading-relaxed">
     Reliable transportation, deliveries, and moving services in Kabale. Moving Kabale, one ride at a time.
   </p>
@@ -31,7 +31,7 @@ const Footer = () => {
           {/* Quick Links */}
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Quick Links</h3>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-2 text-sm">
               <li><Link to="/about" className="hover:text-orange-400 transition">About Us</Link></li>
               <li><Link to="/services" className="hover:text-orange-400 transition">Our Services</Link></li>
               <li><Link to="/how-it-works" className="hover:text-orange-400 transition">How It Works</Link></li>
@@ -43,7 +43,7 @@ const Footer = () => {
           {/* Services */}
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Services</h3>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-2 text-sm">
               <li><Link to="/services" className="hover:text-orange-400 transition">Boda-Boda Rides</Link></li>
               <li><Link to="/services" className="hover:text-orange-400 transition">Bike Hire</Link></li>
               <li><Link to="/services" className="hover:text-orange-400 transition">Car Rides</Link></li>
@@ -56,24 +56,24 @@ const Footer = () => {
           {/* Contact */}
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Contact Us</h3>
-            <ul className="space-y-4 text-sm">
-              <li className="flex items-start gap-3">
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start gap-2 min-w-0">
                 <MapPin size={18} className="text-orange-400 mt-1 shrink-0" />
                 <span>Kabale, Uganda<br/>Near Kabale University</span>
               </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-start gap-2 min-w-0">
                 <Phone size={18} className="text-orange-400 shrink-0" />
                 <a href="tel:+256791475407" className="hover:text-orange-400 transition">+256 791 475 407</a>
               </li>
-              <li className="flex items-center gap-3">
+              <li className="flex items-start gap-2 min-w-0">
                 <Mail size={18} className="text-orange-400 shrink-0" />
-                <a href="mailto:otuuse26@gmail.com" className="hover:text-orange-400 transition">otuuse26@gmail.com</a>
+                <a href="mailto:otuuse26@gmail.com" className="hover:text-orange-400 transition break-all">otuuse26@gmail.com</a>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-green-800 pt-8 text-center text-xs text-green-400">
+        <div className="border-t border-green-800 pt-5 text-center text-xs text-green-400">
           <p>&copy; {new Date().getFullYear()} Otuuse Transportation Services. All rights reserved.</p>
         </div>
       </div>
