@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Star, Zap, Leaf, Wallet, VolumeX } from "lucide-react";import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -57,6 +58,39 @@ const testimonials = [
 ];
 
 const Home = () => {
+  const [activePillar, setActivePillar] = useState(0);
+  const pillarTrack = useRef(null);
+  const pillarTimer = useRef(null);
+
+  const scrollToPillar = (index) => {
+    const track = pillarTrack.current;
+    if (!track) return;
+    const next = (index + pillars.length) % pillars.length;
+    track.children[next]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+    setActivePillar(next);
+  };
+
+  useEffect(() => {
+    pillarTimer.current = window.setInterval(() => {
+      setActivePillar((current) => {
+        const next = (current + 1) % pillars.length;
+        const track = pillarTrack.current;
+        track?.children[next]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+        return next;
+      });
+    }, 5000);
+    return () => window.clearInterval(pillarTimer.current);
+  }, []);
+
+  const handlePillarScroll = () => {
+    const track = pillarTrack.current;
+    if (!track || !track.children.length) return;
+    const closest = Array.from(track.children).reduce((best, child, index) =>
+      Math.abs(child.offsetLeft - track.scrollLeft) <
+      Math.abs(track.children[best].offsetLeft - track.scrollLeft) ? index : best, 0);
+    setActivePillar(closest);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar transparent />
@@ -146,17 +180,26 @@ const Home = () => {
                 Discover Why Electric <ArrowRight size={20} />
               </Link>
             </div>
-            <div className="grid sm:grid-cols-2 gap-5">
-              {pillars.map((pillar) => {
-                const Icon = pillar.icon;
-                return (
-                  <div key={pillar.title} className="bg-white/10 p-6 rounded-2xl">
-                    <Icon className="text-orange-400" size={28} />
-                    <h3 className="mt-4 font-bold">{pillar.title}</h3>
-                    <p className="mt-2 text-sm text-green-200">{pillar.text}</p>
-                  </div>
-                );
-              })}
+            <div className="min-w-0">
+              <div ref={pillarTrack} onScroll={handlePillarScroll} aria-label="Electric transport benefits" className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {pillars.map((pillar) => {
+                  const Icon = pillar.icon;
+                  return (
+                    <div key={pillar.title} className="bg-white/10 p-6 rounded-2xl shrink-0 w-full snap-start min-h-[190px]">
+                      <Icon className="text-orange-400" size={28} />
+                      <h3 className="mt-4 font-bold">{pillar.title}</h3>
+                      <p className="mt-2 text-sm text-green-200">{pillar.text}</p>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex justify-center items-center gap-3 mt-3" aria-label="Choose benefit">
+                {pillars.map((pillar, index) => (
+                  <button key={pillar.title} type="button" onClick={() => scrollToPillar(index)}
+                    aria-label={`Show ${pillar.title}`} aria-current={activePillar === index ? "true" : undefined}
+                    className={`h-2.5 rounded-full transition-all ${activePillar === index ? "w-7 bg-orange-400" : "w-2.5 bg-white/40"}`} />
+                ))}
+              </div>
             </div>
           </div>
           <div className="mt-14 grid grid-cols-3 gap-6 border-t border-white/10 pt-8 text-center">
