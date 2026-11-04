@@ -75,7 +75,9 @@ const Home = () => {
       setActivePillar((current) => {
         const next = (current + 1) % pillars.length;
         const track = pillarTrack.current;
-        track?.children[next]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+        if (track?.children[next] && track.children[0]) {
+          track.scrollTo({ left: track.children[next].offsetLeft - track.children[0].offsetLeft, behavior: "smooth" });
+        }
         return next;
       });
     }, 5000);
