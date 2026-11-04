@@ -34,6 +34,7 @@ const RequestService = () => {
   const [coords, setCoords] = useState({ pickup: null, destination: null });
   const [mapTarget, setMapTarget] = useState(null);
   const [locating, setLocating] = useState(false);
+  const [gpsAccuracy, setGpsAccuracy] = useState(null);
   const [locationMessage, setLocationMessage] = useState("");
   const apiBase = "https://otuuse-api.onrender.com";
 
@@ -73,12 +74,14 @@ const RequestService = () => {
     setLocating(true); setLocationMessage("");
     navigator.geolocation.getCurrentPosition(async ({ coords: position }) => {
       const point = { lat: position.latitude, lng: position.longitude };
+      setGpsAccuracy(Math.round(position.accuracy));
       setCoords(old => ({ ...old, pickup: point }));
       setFormData(old => ({ ...old, pickup: "Current GPS location" }));
       try {
         const name = await reverseGeocode(point.lat, point.lng);
         setFormData(old => ({ ...old, pickup: name }));
       } catch { setLocationMessage("GPS coordinates found. Place name unavailable; you may edit the pickup."); }
+      if (position.accuracy > 100) setLocationMessage(`Your location is approximate (±${Math.round(position.accuracy)} m). Please verify the pickup on the map before booking.`);
       setLocating(false);
     }, (err) => {
       setLocating(false);
@@ -89,11 +92,12 @@ const RequestService = () => {
       };
       setLocationMessage(messages[err.code] || "Location detection failed. You can choose your pickup on the map.");
     },
-    { enableHighAccuracy: false, timeout: 30000, maximumAge: 60000 });
+    { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 });
   };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (["pickup", "destination"].includes(e.target.name)) setCoords(old => ({ ...old, [e.target.name]: null }));
+    if (e.target.name === "pickup") setGpsAccuracy(null);
   };
 
   const handleSubmit = async (e) => {
@@ -122,6 +126,7 @@ const RequestService = () => {
       const booking = await response.json();
       setConfirmation(booking.id);
       setCoords({ pickup: null, destination: null });
+      setGpsAccuracy(null);
       setMapTarget(null);
       setFormData({ customer_name: "", service: "", pickup: "", destination: "", phone: "", description: "", time: "" });
     } catch (err) {
@@ -223,6 +228,7 @@ const RequestService = () => {
                 <h3 className="font-bold text-green-950">GPS and map selection</h3>
                 <p className="text-sm text-gray-700">Use GPS to fill your pickup, or select pickup and destination by tapping the map. You can also type locations manually.</p>
                 {locationMessage && <p role="status" className="text-sm text-red-800">{locationMessage}</p>}
+                {gpsAccuracy !== null && <p role="status" className="text-sm text-green-900">GPS estimated accuracy: ±{gpsAccuracy} metres. Check the location on the map if it is not correct.</p>}
                 <div className="flex flex-wrap gap-3">
                   <button type="button" onClick={useGPS} disabled={locating} className="bg-green-800 text-white rounded-lg px-4 py-2 disabled:opacity-50">{locating ? "Locating..." : "Use my current location"}</button>
                   <button type="button" onClick={() => setMapTarget("pickup")} className="border border-green-800 rounded-lg px-4 py-2">Choose pickup on map</button>
