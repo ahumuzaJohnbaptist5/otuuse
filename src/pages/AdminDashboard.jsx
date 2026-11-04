@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LayoutDashboard, ClipboardList, Users, Truck, LogOut, RefreshCw } from "lucide-react";
 
-const API = "https://otuuse-api.onrender.com/api/admin/";
+const API = (import.meta.env.VITE_API_BASE_URL || "https://otuuse-api.onrender.com").replace(/\/$/, "") + "/api/admin/";
 const request = async (path, options = {}) => {
   const token = sessionStorage.getItem("otuuse-admin-token");
-  const response = await fetch(API + path, {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 20000);
+  let response;
+  try { response = await fetch(API + path, {
     ...options,
+    signal: controller.signal,
     headers: { "Content-Type": "application/json", ...(token ? { Authorization: "Token " + token } : {}), ...options.headers },
-  });
+  }); } catch (err) {
+    if (err.name === "AbortError") throw new Error("Server request timed out. Please try again.");
+    throw new Error("Cannot connect to the Otuuse server. Check your connection.");
+  } finally { window.clearTimeout(timeout); }
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.detail || "Request failed (" + response.status + ")");
   return data;
@@ -106,8 +113,8 @@ export function AdminDashboard({ section = "dashboard" }) {
       <nav className="flex flex-wrap md:flex-col gap-2">{nav.map(([key,label,Icon])=><Link key={key} to={"/admin/"+key} className={"flex items-center gap-3 rounded-lg px-4 py-3 "+(section===key?"bg-orange-500":"hover:bg-green-800")}><Icon size={18}/>{label}</Link>)}</nav>
       <button onClick={logout} className="mt-8 flex gap-2 items-center text-green-100 hover:text-white"><LogOut size={18}/> Sign out</button>
     </aside>
-    <main className="flex-1 min-w-0 p-5 md:p-10">
-      <div className="flex justify-between items-center mb-8"><h1 className="text-3xl font-extrabold text-green-950 capitalize">{section === "dashboard" ? "Overview" : section}</h1><button onClick={()=>setRefresh(x=>x+1)} className="flex items-center gap-2 border rounded-lg bg-white px-4 py-2"><RefreshCw size={17}/> Refresh</button></div>
+    <main className="flex-1 min-w-0 p-4 sm:p-6 md:p-8">
+      <div className="flex flex-wrap justify-between items-center gap-3 mb-5"><h1 className="text-2xl sm:text-3xl font-extrabold text-green-950 capitalize">{section === "dashboard" ? "Overview" : section}</h1><button onClick={()=>setRefresh(x=>x+1)} className="flex items-center gap-2 border rounded-lg bg-white px-4 py-2"><RefreshCw size={17}/> Refresh</button></div>
       {section === "drivers" && <div className="mb-5"><button type="button" onClick={() => setShowDriverForm(value => !value)} className="bg-orange-500 text-white font-bold rounded-lg px-5 py-3">{showDriverForm ? "Cancel" : "+ Add New Driver"}</button></div>}
       {driverNotice && <p role="status" className="bg-green-100 text-green-900 p-4 rounded-lg mb-5">{driverNotice}</p>}
       {section === "drivers" && showDriverForm && <form onSubmit={addDriver} className="bg-white border rounded-xl p-6 mb-6 grid sm:grid-cols-2 gap-4">
