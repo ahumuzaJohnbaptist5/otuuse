@@ -76,13 +76,14 @@ const RequestService = () => {
       const point = { lat: position.latitude, lng: position.longitude };
       setGpsAccuracy(Math.round(position.accuracy));
       setCoords(old => ({ ...old, pickup: point }));
-      setFormData(old => ({ ...old, pickup: "Current GPS location" }));
+      const coordinateLabel = `${point.lat.toFixed(6)}, ${point.lng.toFixed(6)}`;
+      setFormData(old => ({ ...old, pickup: coordinateLabel }));
+      setLocating(false);
       try {
         const name = await reverseGeocode(point.lat, point.lng);
-        setFormData(old => ({ ...old, pickup: name }));
-      } catch { setLocationMessage("GPS coordinates found. Place name unavailable; you may edit the pickup."); }
+        setFormData(old => old.pickup === coordinateLabel ? ({ ...old, pickup: name }) : old);
+      } catch { setLocationMessage("GPS coordinates filled in. The address lookup is unavailable; you can edit the pickup or select it on the map."); }
       if (position.accuracy > 100) setLocationMessage(`Your location is approximate (±${Math.round(position.accuracy)} m). Please verify the pickup on the map before booking.`);
-      setLocating(false);
     }, (err) => {
       setLocating(false);
       const messages = {
