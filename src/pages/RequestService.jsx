@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Send, MapPin, Phone, Clock, FileText } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -13,6 +13,8 @@ const serviceImage = (name = "") => {
   if (label.includes("mov") || label.includes("hostel") || label.includes("house")) return "/images/cargo-2.jpeg";
   return "/images/background.jpeg";
 };
+
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "https://otuuse-api.onrender.com").replace(/\/$/, "");
 
 const RequestService = () => {
   const [formData, setFormData] = useState({
@@ -41,7 +43,6 @@ const RequestService = () => {
   const [locating, setLocating] = useState(false);
   const [gpsAccuracy, setGpsAccuracy] = useState(null);
   const [locationMessage, setLocationMessage] = useState("");
-  const apiBase = (import.meta.env.VITE_API_BASE_URL || "https://otuuse-api.onrender.com").replace(/\/$/, "");
   const trackingComplete = ["COMPLETED", "CANCELLED"].includes(trackingStatus);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ const RequestService = () => {
     const timeout = setTimeout(() => controller.abort(), 20000);
     setLoadingServices(true);
     setError("");
-    fetch(apiBase + "/api/services/", { signal: controller.signal })
+    fetch(API_BASE + "/api/services/", { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("Services could not be loaded (HTTP " + response.status + ").");
         return response.json();
@@ -121,28 +122,29 @@ const RequestService = () => {
     } catch { sessionStorage.removeItem("otuuse-last-booking"); }
   }, []);
 
-  useEffect(() => {
-    if (!trackingToken || trackingComplete) return;
-    const timer = window.setInterval(() => {
-      if (document.visibilityState === "visible") checkBookingStatus(trackingToken);
-    }, 60000);
-    return () => window.clearInterval(timer);
-  }, [trackingToken, trackingComplete]);
-
-  const checkBookingStatus = async (token = trackingToken) => {
+  const checkBookingStatus = useCallback(async (token) => {
     if (!token) return;
     setTrackingBusy(true); setTrackingError("");
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 15000);
     try {
-      const response = await fetch(apiBase + "/api/bookings/track/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tracking_token: token }), signal: controller.signal });
+      const response = await fetch(API_BASE + "/api/bookings/track/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tracking_token: token }), signal: controller.signal });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.detail || "Unable to check booking status.");
       setTrackingStatus(result.status);
       setTrackingUpdatedAt(new Date().toLocaleTimeString());
     } catch (err) { setTrackingError(err.name === "AbortError" ? "Status request timed out." : err.message); }
     finally { window.clearTimeout(timeout); setTrackingBusy(false); }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!trackingToken || trackingComplete) return;
+    checkBookingStatus(trackingToken);
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") checkBookingStatus(trackingToken);
+    }, 60000);
+    return () => window.clearInterval(timer);
+  }, [trackingToken, trackingComplete, checkBookingStatus]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -152,7 +154,7 @@ const RequestService = () => {
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 30000);
     try {
-      const response = await fetch(apiBase + "/api/bookings/", {
+      const response = await fetch(API_BASE + "/api/bookings/", {
         signal: controller.signal,
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -208,7 +210,7 @@ const RequestService = () => {
 
           <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-7 lg:p-9 border border-gray-100">
             {error && <p role="alert" className="mb-6 rounded-xl bg-red-50 p-4 text-red-800">{error}</p>}
-            {confirmation && <div role="status" className="mb-6 rounded-xl bg-green-50 p-4 text-green-900 space-y-2"><p>Booking #{confirmation} received successfully! Our team will contact you.</p>{trackingToken && <><p className="font-semibold">Current status: {trackingStatus || "Checking..."}</p><button type="button" disabled={trackingBusy} onClick={() => checkBookingStatus()} className="rounded-lg bg-green-900 text-white px-4 py-2 disabled:opacity-50">{trackingBusy ? "Checking..." : "Refresh booking status"}</button>{trackingUpdatedAt && <p className="text-xs">Last checked: {trackingUpdatedAt}</p>}{trackingError && <p role="alert" className="text-red-800">{trackingError}</p>}<p className="text-sm">Status updates automatically every minute while this page is open. Your tracking access is saved only in this browser tab. Do not share your private tracking token.</p></>}</div>}
+            {confirmation && <div role="status" className="mb-6 rounded-xl bg-green-50 p-4 text-green-900 space-y-2"><p>Booking #{confirmation} received successfully! Our team will contact you.</p>{trackingToken && <><p className="font-semibold">Current status: {trackingStatus || "Checking..."}</p><button type="button" disabled={trackingBusy} onClick={() => checkBookingStatus(trackingToken)} className="rounded-lg bg-green-900 text-white px-4 py-2 disabled:opacity-50">{trackingBusy ? "Checking..." : "Refresh booking status"}</button>{trackingUpdatedAt && <p className="text-xs">Last checked: {trackingUpdatedAt}</p>}{trackingError && <p role="alert" className="text-red-800">{trackingError}</p>}<p className="text-sm">Status updates automatically every minute while this page is open. Your tracking access is saved only in this browser tab. Do not share your private tracking token.</p></>}</div>}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="customer_name" className="block text-sm font-semibold text-gray-700 mb-2">Your Full Name *</label>
