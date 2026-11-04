@@ -76,14 +76,16 @@ const RequestService = () => {
       const point = { lat: position.latitude, lng: position.longitude };
       setGpsAccuracy(Math.round(position.accuracy));
       setCoords(old => ({ ...old, pickup: point }));
-      const coordinateLabel = `${point.lat.toFixed(6)}, ${point.lng.toFixed(6)}`;
-      setFormData(old => ({ ...old, pickup: coordinateLabel }));
-      setLocating(false);
+      setFormData(old => ({ ...old, pickup: "Finding your location name..." }));
       try {
         const name = await reverseGeocode(point.lat, point.lng);
-        setFormData(old => old.pickup === coordinateLabel ? ({ ...old, pickup: name }) : old);
-      } catch { setLocationMessage("GPS coordinates filled in. The address lookup is unavailable; you can edit the pickup or select it on the map."); }
-      if (position.accuracy > 100) setLocationMessage(`Your location is approximate (±${Math.round(position.accuracy)} m). Please verify the pickup on the map before booking.`);
+        if (!name || name === "Pinned location") throw new Error("No readable address found");
+        setFormData(old => old.pickup === "Finding your location name..." ? ({ ...old, pickup: name }) : old);
+      } catch {
+        setFormData(old => old.pickup === "Finding your location name..." ? ({ ...old, pickup: "" }) : old);
+        setLocationMessage("GPS coordinates detected, but the place name could not be found. Please type your pickup location or select it on the map.");
+      } finally { setLocating(false); }
+      if (position.accuracy > 100) setLocationMessage(current => current || `Your location is approximate (±${Math.round(position.accuracy)} m). Please verify the pickup on the map before booking.`);
     }, (err) => {
       setLocating(false);
       const messages = {
