@@ -142,7 +142,7 @@ const RequestService = () => {
     checkBookingStatus(trackingToken);
     const timer = window.setInterval(() => {
       if (document.visibilityState === "visible") checkBookingStatus(trackingToken);
-    }, 60000);
+    }, 180000);
     return () => window.clearInterval(timer);
   }, [trackingToken, trackingComplete, checkBookingStatus]);
 
@@ -210,7 +210,7 @@ const RequestService = () => {
 
           <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-7 lg:p-9 border border-gray-100">
             {error && <p role="alert" className="mb-6 rounded-xl bg-red-50 p-4 text-red-800">{error}</p>}
-            {confirmation && <div role="status" className="mb-6 rounded-xl bg-green-50 p-4 text-green-900 space-y-2"><p>Booking #{confirmation} received successfully! Our team will contact you.</p>{trackingToken && <><p className="font-semibold">Current status: {trackingStatus || "Checking..."}</p><button type="button" disabled={trackingBusy} onClick={() => checkBookingStatus(trackingToken)} className="rounded-lg bg-green-900 text-white px-4 py-2 disabled:opacity-50">{trackingBusy ? "Checking..." : "Refresh booking status"}</button>{trackingUpdatedAt && <p className="text-xs">Last checked: {trackingUpdatedAt}</p>}{trackingError && <p role="alert" className="text-red-800">{trackingError}</p>}<p className="text-sm">Status updates automatically every minute while this page is open. Your tracking access is saved only in this browser tab. Do not share your private tracking token.</p></>}</div>}
+            {confirmation && <div role="status" className="mb-6 rounded-xl bg-green-50 p-4 text-green-900 space-y-2"><p>Booking #{confirmation} received successfully! Our team will contact you.</p>{trackingToken && <><p className="font-semibold">Current status: {trackingStatus || "Checking..."}</p><button type="button" disabled={trackingBusy} onClick={() => checkBookingStatus(trackingToken)} className="rounded-lg bg-green-900 text-white px-4 py-2 disabled:opacity-50">{trackingBusy ? "Checking..." : "Refresh booking status"}</button>{trackingUpdatedAt && <p className="text-xs">Last checked: {trackingUpdatedAt}</p>}{trackingError && <p role="alert" className="text-red-800">{trackingError}</p>}<p className="text-sm">Status updates automatically every three minutes while this page is open. Your tracking access is saved only in this browser tab. Do not share your private tracking token.</p></>}</div>}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="customer_name" className="block text-sm font-semibold text-gray-700 mb-2">Your Full Name *</label>
