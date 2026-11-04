@@ -30,6 +30,10 @@ const RequestService = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [confirmation, setConfirmation] = useState(null);
+  const [trackingToken, setTrackingToken] = useState("");
+  const [trackingStatus, setTrackingStatus] = useState("");
+  const [trackingError, setTrackingError] = useState("");
+  const [trackingBusy, setTrackingBusy] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [coords, setCoords] = useState({ pickup: null, destination: null });
   const [mapTarget, setMapTarget] = useState(null);
@@ -105,6 +109,20 @@ const RequestService = () => {
     if (e.target.name === "pickup") setGpsAccuracy(null);
   };
 
+  const checkBookingStatus = async (token = trackingToken) => {
+    if (!token) return;
+    setTrackingBusy(true); setTrackingError("");
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 15000);
+    try {
+      const response = await fetch(apiBase + "/api/bookings/track/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tracking_token: token }), signal: controller.signal });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.detail || "Unable to check booking status.");
+      setTrackingStatus(result.status);
+    } catch (err) { setTrackingError(err.name === "AbortError" ? "Status request timed out." : err.message); }
+    finally { window.clearTimeout(timeout); setTrackingBusy(false); }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
@@ -133,6 +151,11 @@ const RequestService = () => {
       if (!response.ok) throw new Error("Your booking could not be saved. Please check the details and try again.");
       const booking = await response.json();
       setConfirmation(booking.id);
+      if (booking.tracking_token) {
+        setTrackingToken(booking.tracking_token);
+        setTrackingStatus(booking.status || "PENDING");
+        sessionStorage.setItem("otuuse-last-booking", JSON.stringify({ id: booking.id, token: booking.tracking_token }));
+      }
       setCoords({ pickup: null, destination: null });
       setGpsAccuracy(null);
       setMapTarget(null);
@@ -161,7 +184,7 @@ const RequestService = () => {
 
           <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-7 lg:p-9 border border-gray-100">
             {error && <p role="alert" className="mb-6 rounded-xl bg-red-50 p-4 text-red-800">{error}</p>}
-            {confirmation && <p role="status" className="mb-6 rounded-xl bg-green-50 p-4 text-green-900">Booking #{confirmation} received successfully! Our team will contact you.</p>}
+            {confirmation && <div role="status" className="mb-6 rounded-xl bg-green-50 p-4 text-green-900 space-y-2"><p>Booking #{confirmation} received successfully! Our team will contact you.</p>{trackingToken && <><p className="font-semibold">Current status: {trackingStatus || "PENDING"}</p><button type="button" disabled={trackingBusy} onClick={() => checkBookingStatus()} className="rounded-lg bg-green-900 text-white px-4 py-2 disabled:opacity-50">{trackingBusy ? "Checking..." : "Refresh booking status"}</button>{trackingError && <p role="alert" className="text-red-800">{trackingError}</p>}<p className="text-sm">Keep this browser session open to track your booking. Never share your private tracking token.</p></>}</div>}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="customer_name" className="block text-sm font-semibold text-gray-700 mb-2">Your Full Name *</label>
