@@ -187,7 +187,7 @@ const Home = () => {
                 {pillars.map((pillar) => {
                   const Icon = pillar.icon;
                   return (
-                    <div key={pillar.title} className="bg-white/10 p-6 rounded-2xl shrink-0 w-full snap-start min-h-[190px]">
+                    <div key={pillar.title} className="bg-white/10 px-5 py-6 rounded-2xl shrink-0 w-[82%] sm:w-[72%] lg:w-[78%] snap-start min-h-[190px] flex flex-col items-center justify-center text-center">
                       <Icon className="text-orange-400" size={28} />
                       <h3 className="mt-4 font-bold">{pillar.title}</h3>
                       <p className="mt-2 text-sm text-green-200">{pillar.text}</p>
