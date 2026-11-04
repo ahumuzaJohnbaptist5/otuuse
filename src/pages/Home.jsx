@@ -66,7 +66,7 @@ const Home = () => {
     const track = pillarTrack.current;
     if (!track) return;
     const next = (index + pillars.length) % pillars.length;
-    track.children[next]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+    track.scrollTo({ left: track.children[next]?.offsetLeft - track.children[0].offsetLeft || 0, behavior: "smooth" });
     setActivePillar(next);
   };
 
