@@ -36,7 +36,7 @@ const RequestService = () => {
   const [locating, setLocating] = useState(false);
   const [gpsAccuracy, setGpsAccuracy] = useState(null);
   const [locationMessage, setLocationMessage] = useState("");
-  const apiBase = "https://otuuse-api.onrender.com";
+  const apiBase = (import.meta.env.VITE_API_BASE_URL || "https://otuuse-api.onrender.com").replace(/\/$/, "");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -76,11 +76,13 @@ const RequestService = () => {
       const point = { lat: position.latitude, lng: position.longitude };
       setGpsAccuracy(Math.round(position.accuracy));
       setCoords(old => ({ ...old, pickup: point }));
-      setFormData(old => ({ ...old, pickup: "Finding your location name..." }));
+      setFormData(old => ({ ...old, pickup: "" }));
+      setLocationMessage("GPS coordinates detected. Finding the nearest named place...");
       try {
         const name = await reverseGeocode(point.lat, point.lng);
         if (!name || name === "Pinned location") throw new Error("No readable address found");
-        setFormData(old => old.pickup === "Finding your location name..." ? ({ ...old, pickup: name }) : old);
+        setFormData(old => !old.pickup ? ({ ...old, pickup: name }) : old);
+        setLocationMessage("");
       } catch {
         setFormData(old => old.pickup === "Finding your location name..." ? ({ ...old, pickup: "" }) : old);
         setLocationMessage("GPS coordinates detected, but the place name could not be found. Please type your pickup location or select it on the map.");
@@ -109,8 +111,11 @@ const RequestService = () => {
     setError("");
     setConfirmation(null);
     setSubmitting(true);
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 30000);
     try {
       const response = await fetch(apiBase + "/api/bookings/", {
+        signal: controller.signal,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -133,8 +138,9 @@ const RequestService = () => {
       setMapTarget(null);
       setFormData({ customer_name: "", service: "", pickup: "", destination: "", phone: "", description: "", time: "" });
     } catch (err) {
-      setError(err.message || "Unable to submit your booking right now.");
+      setError(err.name === "AbortError" ? "Booking request timed out. Please check with Otuuse before retrying, to avoid creating a duplicate booking." : err instanceof TypeError ? "Unable to reach the booking server. Check your internet connection and try again." : err.message || "Unable to submit your booking right now.");
     } finally {
+      window.clearTimeout(timeout);
       setSubmitting(false);
     }
   };
@@ -143,20 +149,20 @@ const RequestService = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
 
-      <main className="flex-grow bg-gray-50 py-16">
-        <div className="max-w-4xl mx-auto px-6">
+      <main className="flex-grow bg-gray-50 py-8 sm:py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
           
-          <div className="text-center mb-12">
+          <div className="text-center mb-7">
             <h1 className="text-4xl lg:text-5xl font-extrabold text-green-950">Request a Service</h1>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
               Fill out the form below. Your booking will be sent directly to the Otuuse team.
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl p-8 lg:p-12 border border-gray-100">
+          <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-7 lg:p-9 border border-gray-100">
             {error && <p role="alert" className="mb-6 rounded-xl bg-red-50 p-4 text-red-800">{error}</p>}
             {confirmation && <p role="status" className="mb-6 rounded-xl bg-green-50 p-4 text-green-900">Booking #{confirmation} received successfully! Our team will contact you.</p>}
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="customer_name" className="block text-sm font-semibold text-gray-700 mb-2">Your Full Name *</label>
                 <input id="customer_name" name="customer_name" type="text" maxLength={100} required value={formData.customer_name} onChange={handleChange} className="w-full px-4 py-3 border border-gray-200 rounded-xl" placeholder="Your full name" />
@@ -165,7 +171,7 @@ const RequestService = () => {
               {/* Service Type Selection */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">What service do you need? *</label>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
                   {services.map((option) => (
                     <label
                       key={option.id}
@@ -194,7 +200,7 @@ const RequestService = () => {
               {loadingServices && <p role="status">Loading available services...</p>}
               {!loadingServices && services.length === 0 && <div className="rounded-xl bg-amber-50 p-4 text-amber-900"><p>Online booking is unavailable until services can be loaded.</p><button type="button" onClick={() => setRetryCount((count) => count + 1)} className="mt-2 rounded-lg bg-green-800 px-4 py-2 font-semibold text-white hover:bg-green-900">Retry loading services</button></div>}
               {/* Locations */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Pickup Location *</label>
                   <div className="relative">
