@@ -34,6 +34,7 @@ const RequestService = () => {
   const [trackingStatus, setTrackingStatus] = useState("");
   const [trackingError, setTrackingError] = useState("");
   const [trackingBusy, setTrackingBusy] = useState(false);
+  const [trackingUpdatedAt, setTrackingUpdatedAt] = useState("");
   const [retryCount, setRetryCount] = useState(0);
   const [coords, setCoords] = useState({ pickup: null, destination: null });
   const [mapTarget, setMapTarget] = useState(null);
@@ -41,6 +42,7 @@ const RequestService = () => {
   const [gpsAccuracy, setGpsAccuracy] = useState(null);
   const [locationMessage, setLocationMessage] = useState("");
   const apiBase = (import.meta.env.VITE_API_BASE_URL || "https://otuuse-api.onrender.com").replace(/\/$/, "");
+  const trackingComplete = ["COMPLETED", "CANCELLED"].includes(trackingStatus);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -88,7 +90,7 @@ const RequestService = () => {
         setFormData(old => !old.pickup ? ({ ...old, pickup: name }) : old);
         setLocationMessage("");
       } catch {
-        setFormData(old => old.pickup === "Finding your location name..." ? ({ ...old, pickup: "" }) : old);
+        setFormData(old => old.pickup ? old : ({ ...old, pickup: "" }));
         setLocationMessage("GPS coordinates detected, but the place name could not be found. Please type your pickup location or select it on the map.");
       } finally { setLocating(false); }
       if (position.accuracy > 100) setLocationMessage(current => current || `Your location is approximate (±${Math.round(position.accuracy)} m). Please verify the pickup on the map before booking.`);
@@ -109,6 +111,24 @@ const RequestService = () => {
     if (e.target.name === "pickup") setGpsAccuracy(null);
   };
 
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem("otuuse-last-booking") || "null");
+      if (saved && Number.isInteger(saved.id) && typeof saved.token === "string" && saved.token.length > 0) {
+        setConfirmation(saved.id);
+        setTrackingToken(saved.token);
+      }
+    } catch { sessionStorage.removeItem("otuuse-last-booking"); }
+  }, []);
+
+  useEffect(() => {
+    if (!trackingToken || trackingComplete) return;
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") checkBookingStatus(trackingToken);
+    }, 60000);
+    return () => window.clearInterval(timer);
+  }, [trackingToken, trackingComplete]);
+
   const checkBookingStatus = async (token = trackingToken) => {
     if (!token) return;
     setTrackingBusy(true); setTrackingError("");
@@ -119,6 +139,7 @@ const RequestService = () => {
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.detail || "Unable to check booking status.");
       setTrackingStatus(result.status);
+      setTrackingUpdatedAt(new Date().toLocaleTimeString());
     } catch (err) { setTrackingError(err.name === "AbortError" ? "Status request timed out." : err.message); }
     finally { window.clearTimeout(timeout); setTrackingBusy(false); }
   };
@@ -127,7 +148,6 @@ const RequestService = () => {
     e.preventDefault();
     if (submitting) return;
     setError("");
-    setConfirmation(null);
     setSubmitting(true);
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 30000);
@@ -151,6 +171,10 @@ const RequestService = () => {
       if (!response.ok) throw new Error("Your booking could not be saved. Please check the details and try again.");
       const booking = await response.json();
       setConfirmation(booking.id);
+      setTrackingToken("");
+      setTrackingStatus("");
+      setTrackingUpdatedAt("");
+      sessionStorage.removeItem("otuuse-last-booking");
       if (booking.tracking_token) {
         setTrackingToken(booking.tracking_token);
         setTrackingStatus(booking.status || "PENDING");
@@ -184,7 +208,7 @@ const RequestService = () => {
 
           <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-7 lg:p-9 border border-gray-100">
             {error && <p role="alert" className="mb-6 rounded-xl bg-red-50 p-4 text-red-800">{error}</p>}
-            {confirmation && <div role="status" className="mb-6 rounded-xl bg-green-50 p-4 text-green-900 space-y-2"><p>Booking #{confirmation} received successfully! Our team will contact you.</p>{trackingToken && <><p className="font-semibold">Current status: {trackingStatus || "PENDING"}</p><button type="button" disabled={trackingBusy} onClick={() => checkBookingStatus()} className="rounded-lg bg-green-900 text-white px-4 py-2 disabled:opacity-50">{trackingBusy ? "Checking..." : "Refresh booking status"}</button>{trackingError && <p role="alert" className="text-red-800">{trackingError}</p>}<p className="text-sm">Keep this browser session open to track your booking. Never share your private tracking token.</p></>}</div>}
+            {confirmation && <div role="status" className="mb-6 rounded-xl bg-green-50 p-4 text-green-900 space-y-2"><p>Booking #{confirmation} received successfully! Our team will contact you.</p>{trackingToken && <><p className="font-semibold">Current status: {trackingStatus || "Checking..."}</p><button type="button" disabled={trackingBusy} onClick={() => checkBookingStatus()} className="rounded-lg bg-green-900 text-white px-4 py-2 disabled:opacity-50">{trackingBusy ? "Checking..." : "Refresh booking status"}</button>{trackingUpdatedAt && <p className="text-xs">Last checked: {trackingUpdatedAt}</p>}{trackingError && <p role="alert" className="text-red-800">{trackingError}</p>}<p className="text-sm">Status updates automatically every minute while this page is open. Your tracking access is saved only in this browser tab. Do not share your private tracking token.</p></>}</div>}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="customer_name" className="block text-sm font-semibold text-gray-700 mb-2">Your Full Name *</label>
