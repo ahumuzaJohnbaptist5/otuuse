@@ -4,6 +4,16 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import LocationMap, { reverseGeocode } from "../components/LocationMap";
 
+const serviceImage = (name = "") => {
+  const label = name.toLowerCase();
+  if (label.includes("boda") || label.includes("motorcycle")) return "/images/boda-1.jpeg";
+  if (label.includes("bicycle") || label.includes("e-bike") || label.includes("bike hire")) return "/images/bike-1.jpeg";
+  if (label.includes("car") || label.includes("taxi")) return "/images/car-1.jpeg";
+  if (label.includes("deliver") || label.includes("package") || label.includes("parcel")) return "/images/cargo-1.jpeg";
+  if (label.includes("mov") || label.includes("hostel") || label.includes("house")) return "/images/cargo-2.jpeg";
+  return "/images/background.jpeg";
+};
+
 const RequestService = () => {
   const [formData, setFormData] = useState({
     customer_name: "",
@@ -151,7 +161,7 @@ const RequestService = () => {
                   {services.map((option) => (
                     <label
                       key={option.id}
-                      className={`flex flex-col items-center justify-center p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                      className={`flex flex-col items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all ${
                         formData.service === String(option.id)
                           ? "border-orange-500 bg-orange-50 text-orange-700 shadow-sm"
                           : "border-gray-200 hover:border-green-300 text-gray-600"
@@ -166,7 +176,7 @@ const RequestService = () => {
                         className="sr-only"
                         required
                       />
-                      <span className="text-3xl mb-2">🚗</span>
+                      <img src={serviceImage(option.name)} alt="" loading="lazy" className="w-full h-24 sm:h-28 object-cover rounded-lg mb-3" />
                       <span className="text-sm font-medium">{option.name}</span>
                     </label>
                   ))}
