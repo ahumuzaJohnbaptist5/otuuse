@@ -29,6 +29,7 @@ const RequestService = () => {
 
   const [services, setServices] = useState([]);
   const [loadingServices, setLoadingServices] = useState(true);
+  const [serviceLoadError, setServiceLoadError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [confirmation, setConfirmation] = useState(null);
@@ -49,7 +50,7 @@ const RequestService = () => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 20000);
     setLoadingServices(true);
-    setError("");
+    setServiceLoadError("");
     fetch(API_BASE + "/api/services/", { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("Services could not be loaded (HTTP " + response.status + ").");
@@ -58,13 +59,13 @@ const RequestService = () => {
       .then((data) => {
         const available = Array.isArray(data) ? data : (data.results || []);
         setServices(available);
-        if (available.length === 0) setError("No active services are configured yet. Please contact Otuuse or try again later.");
+        if (available.length === 0) setServiceLoadError("No active services are configured yet. Please contact Otuuse or retry loading services.");
       })
       .catch((err) => {
         if (!controller.signal.aborted || err.name !== "AbortError") {
-          setError("Could not connect to the booking service. Please retry or contact Otuuse directly.");
+          setServiceLoadError("Could not connect to the booking service. Please retry or contact Otuuse directly.");
         } else {
-          setError("The service request timed out. Please retry.");
+          setServiceLoadError("Loading services timed out. Please retry.");
         }
       })
       .finally(() => { clearTimeout(timeout); setLoadingServices(false); });
@@ -149,6 +150,14 @@ const RequestService = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (submitting) return;
+    if (loadingServices || services.length === 0) {
+      setError("Services are not available yet. Select Retry loading services above, then try again.");
+      return;
+    }
+    if (!formData.service || !services.some((service) => String(service.id) === String(formData.service))) {
+      setError("Please select a service before submitting your booking.");
+      return;
+    }
     setError("");
     setSubmitting(true);
     const controller = new AbortController();
@@ -247,7 +256,7 @@ const RequestService = () => {
               </div>
 
               {loadingServices && <p role="status">Loading available services...</p>}
-              {!loadingServices && services.length === 0 && <div className="rounded-xl bg-amber-50 p-4 text-amber-900"><p>Online booking is unavailable until services can be loaded.</p><button type="button" onClick={() => setRetryCount((count) => count + 1)} className="mt-2 rounded-lg bg-green-800 px-4 py-2 font-semibold text-white hover:bg-green-900">Retry loading services</button></div>}
+              {!loadingServices && services.length === 0 && <div className="rounded-xl bg-amber-50 p-4 text-amber-900"><p>{serviceLoadError || "Online booking is unavailable until services can be loaded."}</p><button type="button" onClick={() => setRetryCount((count) => count + 1)} className="mt-2 rounded-lg bg-green-800 px-4 py-2 font-semibold text-white hover:bg-green-900">Retry loading services</button></div>}
               {/* Locations */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -348,7 +357,7 @@ const RequestService = () => {
               {/* Submit */}
               <button
                 type="submit"
-                disabled={submitting || loadingServices || services.length === 0 || !formData.service}
+                disabled={submitting}
                 className="w-full disabled:opacity-50 bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20"
               >
                 {submitting ? "Submitting..." : "Submit Booking"} <Send size={20} />
