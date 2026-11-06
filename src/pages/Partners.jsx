@@ -33,11 +33,13 @@ const partnerTypes = [
 const localPartners = [
   {
     name: "Chris' Restaurant",
+    image: "/images/partners/chris-partner.jpg",
     location: "Kabale University",
     description: "A local restaurant partner based at Kabale University.",
   },
   {
     name: "Manziz Restaurant",
+    image: "/images/partners/manziz-partner.jpg",
     location: "Kabale Town",
     description: "A restaurant partner located in Kabale town.",
   },
@@ -71,8 +73,10 @@ const Partners = () => (
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {localPartners.map(({ name, location, description }) => (
-              <article key={name} className="group rounded-2xl border border-gray-200 bg-gray-50 p-7 sm:p-8 shadow-sm hover:shadow-lg hover:border-orange-200 transition">
+            {localPartners.map(({ name, location, description, image }) => (
+              <article key={name} className="group overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm hover:shadow-lg hover:border-orange-200 transition">
+                <img src={image} alt={`${name} Otuuse partnership announcement`} loading="lazy" className="w-full h-80 sm:h-96 object-contain bg-amber-50" />
+                <div className="p-7 sm:p-8">
                 <div className="w-14 h-14 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
                   <UtensilsCrossed size={27} />
                 </div>
@@ -83,6 +87,7 @@ const Partners = () => (
                   {location}
                 </p>
                 <p className="mt-4 text-gray-600 leading-relaxed">{description}</p>
+                </div>
               </article>
             ))}
           </div>
